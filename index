@@ -1,0 +1,3787 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Management System 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 2400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .user-bar {
+            background: #ecf0f1;
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        
+        .nav {
+            background: #34495e;
+            padding: 15px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .nav-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.active {
+            background: #e74c3c;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+        
+        .content {
+            padding: 25px;
+            min-height: 600px;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: #34495e;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        input[type="number"], input[type="text"], select, textarea {
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            transition: border 0.3s;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 60px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #e8f4fd, #d6eaf8);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid #3498db;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-export {
+            background: linear-gradient(135deg, #e67e22, #f39c12);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        
+        .location-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .planning-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin: 25px 0;
+        }
+        
+        .planning-box {
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .planning-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 3px solid;
+        }
+        
+        .soll-title {
+            color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .ist-title {
+            color: #27ae60;
+            border-color: #27ae60;
+        }
+        
+        .total-row {
+            background: #2c3e50 !important;
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        
+        .currency {
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .employee-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .vollzeit { background: #e8f6f3; color: #27ae60; }
+        .teilzeit { background: #e8f4fd; color: #3498db; }
+        .werkstudent { background: #fef9e7; color: #f39c12; }
+        .minijob { background: #fdedec; color: #e74c3c; }
+        .festgehalt { background: #e8daef; color: #8e44ad; }
+        .extern { background: #d5dbdb; color: #34495e; }
+        
+        .dienstplan-container {
+            overflow-x: auto;
+            margin: 25px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .dienstplan-table {
+            min-width: 1200px;
+        }
+        
+        .shift-cell {
+            position: relative;
+            min-height: 60px;
+            padding: 5px;
+            font-size: 11px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .shift-entry {
+            margin: 2px 0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+        
+        .shift-entry:hover {
+            opacity: 0.8;
+        }
+        
+        .shift-morning { background: #e8f6f3; border-left: 3px solid #27ae60; }
+        .shift-Day { background: #ebf5fb; border-left: 3px solid #3498db; }
+        .shift-Mid { background: #f4ecf7; border-left: 3px solid #8e44ad; }
+        .shift-Evening { background: #fef9e7; border-left: 3px solid #f39c12; }
+        
+        .add-shift-btn {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .location-management {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .location-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-top: 5px solid;
+        }
+        
+        .location-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
+        .new-location-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .shift-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            z-index: 1002;
+            display: none;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .shift-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .shift-type-btn {
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .shift-type-btn.selected {
+            border-color: #3498db;
+            background: #ebf5fb;
+        }
+        
+        .month-navigation {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .month-nav-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .current-month-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .employee-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed #3498db;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            width: 100%;
+        }
+        
+        .employee-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .employee-card.inactive {
+            opacity: 0.7;
+            border-left: 4px solid #95a5a6;
+        }
+        
+        .employee-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .employee-info h4 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        
+        .employee-info p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .employee-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .employee-status-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 15px;
+        }
+        
+        .lohn-gruppe-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            background: #f1c40f;
+            color: #2c3e50;
+            margin-left: 5px;
+        }
+        
+        .sauberkeit-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        
+        .sauberkeit-4 { background: #27ae60; color: white; }
+        .sauberkeit-3 { background: #f39c12; color: white; }
+        .sauberkeit-2 { background: #e74c3c; color: white; }
+        .sauberkeit-1 { background: #8e44ad; color: white; }
+        
+        .location-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+            color: white;
+        }
+        
+        .note-indicator {
+            display: inline-block;
+            margin-left: 5px;
+            cursor: pointer;
+            color: #3498db;
+        }
+        
+        .note-popup {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            max-width: 300px;
+            font-size: 12px;
+        }
+        
+        .hours-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            background: #2c3e50;
+            color: white;
+            margin-left: 5px;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .edit-shift-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            z-index: 1003;
+            display: none;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .editable-cell {
+            cursor: pointer;
+            border: 1px dashed transparent;
+            padding: 4px;
+            min-width: 60px;
+        }
+        
+        .editable-cell:hover {
+            background-color: #f8f9fa;
+            border-color: #3498db;
+        }
+        
+        .editable-cell.editing {
+            background-color: #e8f4fd;
+            border-color: #3498db;
+            border-style: solid;
+        }
+        
+        .excel-data-container {
+            overflow-x: auto;
+            margin: 25px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .excel-table {
+            min-width: 3000px;
+        }
+        
+        .kpi-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 180px;
+            transition: transform 0.3s;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        
+        .kpi-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+        
+        .kpi-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
+        .neutral { color: #f39c12; }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        
+        .summary-card h4 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 200px;
+            position: relative;
+        }
+        
+        .forecast-filter {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .zero-cell {
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        .input-cell {
+            width: 100%;
+            border: 1px solid #3498db;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .stat-row.total {
+            border-top: 2px solid #3498db;
+            border-bottom: none;
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .stat-label-sm {
+            color: #7f8c8d;
+        }
+        
+        .stat-value-sm {
+            font-weight: 600;
+        }
+        
+        .employee-edit-field {
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .employee-edit-field:hover {
+            background: #f0f0f0;
+            outline: 1px solid #3498db;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 4px;
+            }
+            
+            .planning-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .employee-card {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .employee-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .shift-form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .location-management {
+                grid-template-columns: 1fr;
+            }
+            
+            .month-navigation {
+                flex-wrap: wrap;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="header">
+            <h1>💰 Payroll Management System 2026</h1>
+            <p>Monatsgehalt basiert auf Dienstplan-Stunden</p>
+        </div>
+        
+        <div class="user-bar">
+            <div><strong>Administrator</strong></div>
+            <div><span id="currentMonth">Januar 2026</span></div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
+            <button class="nav-btn" onclick="showSection('dienstplan')">📋 Dienstplan</button>
+            <button class="nav-btn" onclick="showSection('employees')">👥 Mitarbeiter</button>
+            <button class="nav-btn" onclick="showSection('locations')">🏢 Standorte</button>
+            <button class="nav-btn" onclick="showSection('salary')">💵 Lohnkosten</button>
+            <button class="nav-btn" onclick="showSection('forecast')">📈 Forecast 2026</button>
+            <button class="nav-btn" onclick="showSection('reports')">📊 Monatsbericht</button>
+        </div>
+        
+        <div class="content">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <h2>📊 Dashboard - <span id="dashboardMonth">Januar 2026</span></h2>
+                
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">👥 Gesamt Mitarbeiter</div>
+                        <div class="kpi-value" id="totalEmployees">15</div>
+                        <div class="kpi-label">Aktive Mitarbeiter</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">🏢 Aktive Standorte</div>
+                        <div class="kpi-value" id="activeLocations">6</div>
+                        <div class="kpi-label">Filialen</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">📅 Geplante Stunden</div>
+                        <div class="kpi-value" id="totalPlannedHours">0</div>
+                        <div class="kpi-label">Diesen Monat</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">💰 Geschätzte Lohnkosten</div>
+                        <div class="kpi-value" id="estimatedSalaryCosts">€0</div>
+                        <div class="kpi-label">Brutto + NK</div>
+                    </div>
+                </div>
+                
+                <div class="detail-grid">
+                    <div class="summary-card">
+                        <h4>🏢 Standort Stundenübersicht</h4>
+                        <canvas id="locationHoursChart" width="300" height="200"></canvas>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <h4>📈 Forecast Übersicht 2026</h4>
+                        <div id="forecastDashboard">
+                            <div class="stat-row">
+                                <span class="stat-label-sm">Umsatz 2025:</span>
+                                <span class="stat-value-sm" id="totalUmsatz2025">€0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label-sm">Forecast Soll 2026:</span>
+                                <span class="stat-value-sm positive" id="totalForecast2026">€0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label-sm">Wachstum:</span>
+                                <span class="stat-value-sm positive" id="forecastGrowth">+0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <h4>💰 Detaillierte Lohnkosten</h4>
+                        <div id="detailedCosts">
+                            <div class="stat-row">
+                                <span class="stat-label-sm">Brutto Lohnkosten:</span>
+                                <span class="stat-value-sm" id="bruttoCosts">€0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label-sm">+18% Nebenkosten:</span>
+                                <span class="stat-value-sm" id="nkCosts">€0</span>
+                            </div>
+                            <div class="stat-row total">
+                                <span class="stat-label-sm">Gesamt mit NK:</span>
+                                <span class="stat-value-sm" id="totalWithNK">€0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <h4>🚀 Schnellaktionen</h4>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                            <button class="btn" onclick="showSection('dienstplan')">📋 Dienstplan bearbeiten</button>
+                            <button class="btn" onclick="showSection('forecast')">📈 Forecast Daten</button>
+                            <button class="btn" onclick="calculateMonthlySalaryFromSchedule()">💰 Lohnkosten berechnen</button>
+                            <button class="btn btn-export" onclick="exportAllData()">📤 Alle Daten exportieren</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 30px;">🏢 Standort Übersicht:</h3>
+                <div id="locationOverview" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <!-- Standorte werden hier dynamisch geladen -->
+                </div>
+            </div>
+            
+            <!-- Forecast Section -->
+            <div id="forecast" class="section">
+                <h2>📈 Forecast & Umsatzdaten 2026</h2>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">Alle Daten sind editierbar - Klicken Sie auf eine Zelle zum Bearbeiten</p>
+                
+                <div class="forecast-filter">
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 15px;">
+                        <button class="btn" onclick="loadAllForecastData()">🔄 Alle Daten laden</button>
+                        <button class="btn" onclick="addNewForecastRow()">➕ Neue Zeile</button>
+                        <button class="btn btn-export" onclick="exportForecastToExcel()">📤 Als Excel exportieren</button>
+                        <button class="btn btn-warning" onclick="recalculateAllForecast()">🧮 Alle Berechnungen</button>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <label style="font-weight: bold;">Filiale filtern:</label>
+                            <select id="forecastLocationFilter" onchange="filterForecastData()" style="margin-left: 10px;">
+                                <option value="all">Alle Filialen</option>
+                                <option value="1105">Ostbahnhof (1105)</option>
+                                <option value="1111">Potsdam Hbf (1111)</option>
+                                <option value="1002">Friedrichstraße (1002)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="font-weight: bold;">Monat filtern:</label>
+                            <select id="forecastMonthFilter" onchange="filterForecastData()" style="margin-left: 10px;">
+                                <option value="all">Alle Monate</option>
+                                <option value="Januar">Januar</option>
+                                <option value="Februar">Februar</option>
+                                <option value="März">März</option>
+                                <option value="April">April</option>
+                                <option value="Mai">Mai</option>
+                                <option value="Juni">Juni</option>
+                                <option value="Juli">Juli</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="Oktober">Oktober</option>
+                                <option value="November">November</option>
+                                <option value="Dezember">Dezember</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="excel-data-container">
+                    <table class="excel-table" id="forecastTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Filiale</th>
+                                <th>Filial-Name</th>
+                                <th>Monat</th>
+                                <th>Summe Umsatz 2025</th>
+                                <th>Forcast Für Soll 2026</th>
+                                <th>Teamleiter Wünsch</th>
+                                <th>Forcast Ist 2026</th>
+                                <th>Summe Ausgaben 2025</th>
+                                <th>Summe Ausgaben 2026</th>
+                                <th>Anzahl Kunden 2025</th>
+                                <th>Anzahl Kunden 2026</th>
+                                <th>Umsatz pro Kunde 2025</th>
+                                <th>Umsatz pro Kunde 2026</th>
+                                <th>Arbeitsstunden Personal 2025</th>
+                                <th>Arbeitsstunden Personal Teamleiter soll 2026</th>
+                                <th>Arbeitsstunden Personal Teamleiter wünsch 2026</th>
+                                <th>Arbeitsstunden Personal 2026 ist</th>
+                                <th>Umsatz pro Arbeitsstunde 2025</th>
+                                <th>Umsatz pro Arbeitsstunde soll 2026</th>
+                                <th>Umsatz pro Arbeitsstunde 2026 wünsch</th>
+                                <th>Umsatz pro Arbeitsstunde 2026 ist</th>
+                                <th>Kassen Differenz 2025</th>
+                                <th>Kassen Differenz 2026</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="forecastData">
+                            <!-- Forecast-Daten werden hier geladen -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="4"><strong>GESAMT</strong></td>
+                                <td class="currency"><strong id="totalUmsatz2025Foot">€0</strong></td>
+                                <td class="currency"><strong id="totalForecastSoll2026">€0</strong></td>
+                                <td class="currency"><strong id="totalTeamleiterWunsch">€0</strong></td>
+                                <td class="currency"><strong id="totalForecastIst2026">€0</strong></td>
+                                <td class="currency"><strong id="totalAusgaben2025">€0</strong></td>
+                                <td class="currency"><strong id="totalAusgaben2026">€0</strong></td>
+                                <td><strong id="totalKunden2025">0</strong></td>
+                                <td><strong id="totalKunden2026">0</strong></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong id="totalStunden2025">0</strong></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="currency"><strong id="totalKassen2025">€0</strong></td>
+                                <td class="currency"><strong id="totalKassen2026">€0</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Employees Section -->
+            <div id="employees" class="section">
+                <h2>👥 Alle Mitarbeiter</h2>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">Vollständige Liste aller Mitarbeiter - Klicken Sie auf die Werte zum Bearbeiten</p>
+                
+                <div style="margin: 20px 0; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <input type="text" id="employeeSearch" placeholder="🔍 Mitarbeiter suchen..." style="padding: 10px; width: 300px;">
+                    <select id="locationFilter" onchange="filterEmployees()">
+                        <option value="all">Alle Standorte</option>
+                        <!-- Standort-Optionen werden dynamisch geladen -->
+                    </select>
+                    <button class="btn" onclick="filterEmployees()">🔍 Filtern</button>
+                    <button class="btn" onclick="showAddEmployeeForm()">➕ Neuer Mitarbeiter</button>
+                </div>
+                
+                <div id="addEmployeeForm" class="employee-form" style="display: none;">
+                    <h3>➕ Neuen Mitarbeiter hinzufügen</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Vorname</label>
+                            <input type="text" id="newFirstName" placeholder="Vorname">
+                        </div>
+                        <div class="form-group">
+                            <label>Nachname</label>
+                            <input type="text" id="newLastName" placeholder="Nachname">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Standort</label>
+                            <select id="newLocation">
+                                <!-- Standort-Optionen werden dynamisch geladen -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Vertragsart</label>
+                            <select id="newType">
+                                <option value="vollzeit">Vollzeit</option>
+                                <option value="teilzeit">Teilzeit</option>
+                                <option value="minijob">Minijob</option>
+                                <option value="werkstudent">Werkstudent</option>
+                                <option value="festgehalt">Festgehalt</option>
+                                <option value="extern">Extern</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stundensatz (€)</label>
+                            <input type="number" step="0.1" id="newHourlyRate" placeholder="14.0" value="14.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Lohn Gruppe</label>
+                            <select id="newLohnGruppe">
+                                <option value="A">A (14.0€)</option>
+                                <option value="B">B (14.5€)</option>
+                                <option value="C">C (14.6€)</option>
+                                <option value="D">D (15.1€)</option>
+                                <option value="E">E (16.1€)</option>
+                                <option value="F">F (18.1€)</option>
+                                <option value="G">G (19.1€)</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Vertragsstunden/Monat</label>
+                            <input type="number" id="newContractHours" placeholder="160" value="160">
+                        </div>
+                        <div class="form-group">
+                            <label>Festgehalt (€, falls zutreffend)</label>
+                            <input type="number" id="newFixedSalary" placeholder="0" value="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Notizen</label>
+                            <textarea id="newEmployeeNotes" placeholder="Mitarbeiter Notizen..."></textarea>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn" onclick="addNewEmployee()">✅ Mitarbeiter speichern</button>
+                        <button class="btn btn-danger" onclick="hideAddEmployeeForm()">❌ Abbrechen</button>
+                    </div>
+                </div>
+                
+                <div id="allEmployeesList">
+                    <!-- Alle Mitarbeiter werden hier geladen -->
+                </div>
+            </div>
+            
+            <!-- Locations Management Section -->
+            <div id="locations" class="section">
+                <h2>🏢 Standort Management</h2>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">Verwalten Sie alle Filialen und Standorte</p>
+                
+                <div class="new-location-form">
+                    <h3>➕ Neuen Standort hinzufügen</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Standort Name</label>
+                            <input type="text" id="newLocationName" placeholder="z.B. Berlin-Mitte">
+                        </div>
+                        <div class="form-group">
+                            <label>Standort ID</label>
+                            <input type="text" id="newLocationId" placeholder="z.B. mitte">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Adresse</label>
+                            <input type="text" id="newLocationAddress" placeholder="Straße, PLZ Stadt">
+                        </div>
+                        <div class="form-group">
+                            <label>Farbe</label>
+                            <input type="color" id="newLocationColor" value="#3498db">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Max. Mitarbeiter</label>
+                            <input type="number" id="newLocationMaxEmployees" placeholder="10" value="10">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addNewLocation()">🏢 Standort hinzufügen</button>
+                </div>
+                
+                <h3 style="margin-top: 30px;">📋 Aktive Standorte:</h3>
+                <div class="location-management" id="locationsList">
+                    <!-- Standorte werden hier dynamisch geladen -->
+                </div>
+            </div>
+            
+            <!-- Dienstplan Section -->
+            <div id="dienstplan" class="section">
+                <h2>📋 Dienstplan - <span id="dienstplanMonth">Januar 2026</span></h2>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">Vollständige Dienstplanung für alle Standorte</p>
+                
+                <div class="month-navigation">
+                    <button class="month-nav-btn" onclick="changeMonth(-1)">◀</button>
+                    <span class="current-month-display" id="currentDienstplanMonth">Januar 2026</span>
+                    <button class="month-nav-btn" onclick="changeMonth(1)">▶</button>
+                    <button class="btn" onclick="copyPreviousMonth()">📋 Vormonat kopieren</button>
+                    <button class="btn" onclick="clearSchedule()">🗑️ Leeren</button>
+                    <button class="btn btn-export" onclick="exportDienstplan()">📤 Exportieren</button>
+                    <button class="btn" onclick="calculateMonthlySalaryFromSchedule()">💰 Gehälter berechnen</button>
+                </div>
+                
+                <div style="margin: 20px 0; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <select id="dienstplanLocation" onchange="loadDienstplan()">
+                        <option value="all">Alle Standorte</option>
+                        <!-- Standort-Optionen werden dynamisch geladen -->
+                    </select>
+                    <select id="dienstplanView" onchange="loadDienstplan()">
+                        <option value="monthly">Monatsansicht</option>
+                        <option value="weekly">Wochenansicht</option>
+                        <option value="daily">Tagesansicht</option>
+                    </select>
+                </div>
+                
+                <div id="dienstplanContent">
+                    <!-- Dienstplan wird hier dynamisch geladen -->
+                </div>
+            </div>
+            
+            <!-- Salary Calculation Section -->
+            <div id="salary" class="section">
+                <h2>💵 Lohnkosten Berechnung - <span id="salaryMonth">Januar 2026</span></h2>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">Berechnung basiert auf Dienstplan-Stunden</p>
+                
+                <div style="margin: 20px 0; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <button class="btn" onclick="calculateMonthlySalaryFromSchedule()">🔄 Neu berechnen</button>
+                    <button class="btn" onclick="calculateBasedOnContractHours()">📋 Nach Vertragsstunden</button>
+                    <button class="btn btn-export" onclick="exportSalaryReport()">📤 Als Excel exportieren</button>
+                    <button class="btn" onclick="showSection('reports')">📊 Vollständiger Bericht</button>
+                </div>
+                
+                <div id="salaryContent">
+                    <!-- Lohnkosten werden nach Standort gruppiert geladen -->
+                </div>
+            </div>
+            
+            <!-- Reports Section -->
+            <div id="reports" class="section">
+                <h2>📊 Vollständiger Monatsbericht - <span id="reportMonth">Januar 2026</span></h2>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">Gemäß Dienstplan-Stunden mit allen Berechnungen</p>
+                
+                <div style="margin: 20px 0; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <button class="btn" onclick="generateFullReport()">📊 Bericht generieren</button>
+                    <button class="btn btn-export" onclick="exportFullReport()">📤 Als Excel exportieren</button>
+                    <button class="btn" onclick="printReport()">🖨️ Bericht drucken</button>
+                </div>
+                
+                <div id="fullReportContent">
+                    <!-- Vollständiger Bericht wird hier generiert -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dienstplan Modal -->
+    <div id="shiftModal" class="shift-modal">
+        <h3>📅 Schicht eintragen</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mitarbeiter</label>
+                <select id="shiftEmployee">
+                    <!-- Mitarbeiter werden dynamisch geladen -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Datum</label>
+                <input type="date" id="shiftDate">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Schichttyp</label>
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                    <div class="shift-type-btn" data-type="morning" onclick="selectShiftType('morning')">🌅 Früh</div>
+                    <div class="shift-type-btn" data-type="Day" onclick="selectShiftType('Day')">🌇 Day</div>
+                    <div class="shift-type-btn" data-type="Mid" onclick="selectShiftType('Mid')">🌙 Mid</div>
+                    <div class="shift-type-btn" data-type="Evening" onclick="selectShiftType('Evening')">⏰ Evening</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Startzeit</label>
+                <input type="time" id="shiftStart" value="08:00">
+            </div>
+            <div class="form-group">
+                <label>Endzeit</label>
+                <input type="time" id="shiftEnd" value="16:00">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Stunden</label>
+                <input type="number" id="shiftHours" step="0.5" value="8">
+            </div>
+            <div class="form-group">
+                <label>Pause (Minuten)</label>
+                <input type="number" id="shiftBreak" value="30">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Notizen</label>
+                <textarea id="shiftNotes" placeholder="Schichtnotizen..."></textarea>
+            </div>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button class="btn" onclick="saveShift()">💾 Schicht speichern</button>
+            <button class="btn btn-danger" onclick="closeShiftModal()">❌ Abbrechen</button>
+        </div>
+    </div>
+
+    <!-- Schicht bearbeiten Modal -->
+    <div id="editShiftModal" class="edit-shift-modal">
+        <h3>✏️ Schicht bearbeiten</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Stunden</label>
+                <input type="number" id="editShiftHours" step="0.5" value="8">
+            </div>
+            <div class="form-group">
+                <label>Schichttyp</label>
+                <select id="editShiftType">
+                    <option value="morning">🌅 Früh</option>
+                    <option value="Day">🌇 Day</option>
+                    <option value="Mid">🌙 Mid</option>
+                    <option value="Evening">⏰ Evening</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Notizen</label>
+                <textarea id="editShiftNotes" placeholder="Schichtnotizen..."></textarea>
+            </div>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button class="btn" onclick="updateShift()">💾 Aktualisieren</button>
+            <button class="btn btn-danger" onclick="deleteShift()">🗑️ Löschen</button>
+            <button class="btn" onclick="closeEditShiftModal()">❌ Abbrechen</button>
+        </div>
+    </div>
+
+    <!-- Forecast Modal -->
+    <div id="forecastModal" class="shift-modal">
+        <h3>✏️ Forecast-Daten bearbeiten</h3>
+        <div id="forecastModalContent"></div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div id="modalOverlay" class="modal-overlay"></div>
+
+    <script>
+        // ==================== GLOBALE DATENSTRUKTUREN ====================
+        
+        // Standorte
+        const LOCATIONS = [
+            {
+                id: 'potsdam',
+                name: 'Potsdam',
+                color: '#3498db',
+                address: 'Potsdamer Straße 123, 14467 Potsdam',
+                maxEmployees: 10,
+                active: true
+            },
+            {
+                id: 'ostbahnhof',
+                name: 'Ostbahnhof',
+                color: '#e74c3c',
+                address: 'Am Ostbahnhof 45, 10243 Berlin',
+                maxEmployees: 12,
+                active: true
+            },
+            {
+                id: 'charlottenburg',
+                name: 'Charlottenburg',
+                color: '#9b59b6',
+                address: 'Kantstraße 67, 10627 Berlin',
+                maxEmployees: 8,
+                active: true
+            },
+            {
+                id: 'mitte',
+                name: 'Mitte',
+                color: '#2ecc71',
+                address: 'Friedrichstraße 101, 10117 Berlin',
+                maxEmployees: 15,
+                active: false
+            },
+            {
+                id: 'kreuzberg',
+                name: 'Kreuzberg',
+                color: '#e67e22',
+                address: 'Bergmannstraße 23, 10961 Berlin',
+                maxEmployees: 6,
+                active: false
+            },
+            {
+                id: 'sonstige',
+                name: 'Sonstige',
+                color: '#95a5a6',
+                address: 'Zentrale / Externe',
+                maxEmployees: 999,
+                active: true
+            }
+        ];
+
+        // Mitarbeiter - vollständig editierbar
+        let ALL_EMPLOYEES = [
+            // ===== POTSDAM =====
+            {
+                id: 1,
+                nr: 1,
+                name: "Rakesh Manandhar",
+                location: "potsdam",
+                hourlyRate: 19.1,
+                lohnGruppe: "G",
+                type: "vollzeit",
+                sauberkeit: null,
+                notes: "",
+                active: true,
+                contractHours: 172,
+                fixedSalary: 0
+            },
+            {
+                id: 2,
+                nr: 2,
+                name: "Vishal Rajai",
+                location: "potsdam",
+                hourlyRate: 16.1,
+                lohnGruppe: "E",
+                type: "vollzeit",
+                sauberkeit: 4,
+                notes: "Sehr zuverlässig",
+                active: true,
+                contractHours: 172,
+                fixedSalary: 0
+            },
+            {
+                id: 3,
+                nr: 3,
+                name: "Harshita Ramessha",
+                location: "potsdam",
+                hourlyRate: 14.0,
+                lohnGruppe: "A",
+                type: "teilzeit",
+                sauberkeit: 3,
+                notes: "",
+                active: true,
+                contractHours: 40,
+                fixedSalary: 0
+            },
+            {
+                id: 4,
+                nr: 4,
+                name: "Josiah Nicholas Rebello",
+                location: "potsdam",
+                hourlyRate: 14.0,
+                lohnGruppe: "A",
+                type: "teilzeit",
+                sauberkeit: null,
+                notes: "Neuer Mitarbeiter",
+                active: true,
+                contractHours: 160,
+                fixedSalary: 0
+            },
+            {
+                id: 5,
+                nr: 5,
+                name: "Mughal Muhammad Haroon",
+                location: "potsdam",
+                hourlyRate: 14.0,
+                lohnGruppe: "A",
+                type: "minijob",
+                sauberkeit: null,
+                notes: "",
+                active: true,
+                contractHours: 40,
+                fixedSalary: 0
+            },
+            
+            // ===== OSTBAHNHOF =====
+            {
+                id: 6,
+                nr: 1,
+                name: "Khalil Maansori",
+                location: "ostbahnhof",
+                hourlyRate: 18.1,
+                lohnGruppe: "F",
+                type: "vollzeit",
+                sauberkeit: null,
+                notes: "",
+                active: true,
+                contractHours: 172,
+                fixedSalary: 0
+            },
+            {
+                id: 7,
+                nr: 2,
+                name: "Muhammad Zeeshan",
+                location: "ostbahnhof",
+                hourlyRate: 14.0,
+                lohnGruppe: "A",
+                type: "teilzeit",
+                sauberkeit: null,
+                notes: "",
+                active: true,
+                contractHours: 60,
+                fixedSalary: 0
+            },
+            {
+                id: 8,
+                nr: 3,
+                name: "Nirmala Tamang",
+                location: "ostbahnhof",
+                hourlyRate: 14.0,
+                lohnGruppe: "A",
+                type: "teilzeit",
+                sauberkeit: null,
+                notes: "",
+                active: true,
+                contractHours: 40,
+                fixedSalary: 0
+            },
+            {
+                id: 9,
+                nr: 4,
+                name: "Kabuna Shrestha",
+                location: "ostbahnhof",
+                hourlyRate: 14.0,
+                lohnGruppe: "A",
+                type: "minijob",
+                sauberkeit: null,
+                notes: "",
+                active: true,
+                contractHours: 40,
+                fixedSalary: 0
+            },
+            {
+                id: 10,
+                nr: 5,
+                name: "Shabi Bhandary",
+                location: "ostbahnhof",
+                hourlyRate: 16.1,
+                lohnGruppe: "E",
+                type: "vollzeit",
+                sauberkeit: null,
+                notes: "Für beiden Store",
+                active: true,
+                contractHours: 172,
+                fixedSalary: 0
+            },
+            {
+                id: 11,
+                nr: 6,
+                name: "Pratima Ghimire",
+                location: "ostbahnhof",
+                hourlyRate: 15.1,
+                lohnGruppe: "D",
+                type: "teilzeit",
+                sauberkeit: null,
+                notes: "",
+                active: true,
+                contractHours: 120,
+                fixedSalary: 0
+            },
+            
+            // ===== SONSTIGE =====
+            {
+                id: 12,
+                nr: 1,
+                name: "Shakti Pandit",
+                location: "sonstige",
+                hourlyRate: 28.125,
+                lohnGruppe: "custom",
+                type: "festgehalt",
+                sauberkeit: null,
+                notes: "Festgehalt 4500€ bei 160 Stunden",
+                active: true,
+                contractHours: 160,
+                fixedSalary: 4500
+            },
+            {
+                id: 13,
+                nr: 2,
+                name: "Corndi Putz Firma",
+                location: "sonstige",
+                hourlyRate: 0,
+                lohnGruppe: "custom",
+                type: "extern",
+                sauberkeit: null,
+                notes: "Externe Reinigungsfirma - monatlich 602.5€",
+                active: true,
+                contractHours: 0,
+                fixedSalary: 602.5
+            },
+            {
+                id: 14,
+                nr: 3,
+                name: "Mathias Braun",
+                location: "sonstige",
+                hourlyRate: 0,
+                lohnGruppe: "custom",
+                type: "festgehalt",
+                sauberkeit: null,
+                notes: "Festgehalt 1000€",
+                active: true,
+                contractHours: 0,
+                fixedSalary: 1000
+            },
+            {
+                id: 15,
+                nr: 4,
+                name: "Thomas Braun",
+                location: "sonstige",
+                hourlyRate: 0,
+                lohnGruppe: "custom",
+                type: "festgehalt",
+                sauberkeit: null,
+                notes: "Festgehalt 1000€",
+                active: true,
+                contractHours: 0,
+                fixedSalary: 1000
+            }
+        ];
+
+        // Dienstplan Daten
+        let SCHEDULES = {
+            '2026-01': {} // Start mit leerem Januar
+        };
+
+        // ==================== VOLLSTÄNDIGE FORECAST DATEN ====================
+        
+        const FORECAST_DATA = [
+            // Filiale Ostbahnhof (1105) - 12 Monate komplett
+            { id: 1, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "Januar", summeUmsatz2025: 28256.35, forecastSoll2026: 30800.00, teamleiterWunsch: 0, forecastIst2026: null, summeAusgaben2025: 654.01, summeAusgaben2026: null, anzahlKunden2025: 4460, anzahlKunden2026: null, umsatzProKunde2025: 6.34, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 522.25, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 54.11, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 64.79, kassenDifferenz2026: null },
+            { id: 2, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "Februar", summeUmsatz2025: 34064.15, forecastSoll2026: 37130.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 563.93, summeAusgaben2026: null, anzahlKunden2025: 5265, anzahlKunden2026: null, umsatzProKunde2025: 6.47, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 588.95, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 57.84, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: -47.27, kassenDifferenz2026: null },
+            { id: 3, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "März", summeUmsatz2025: 37822.44, forecastSoll2026: 41227.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 619.07, summeAusgaben2026: null, anzahlKunden2025: 6027, anzahlKunden2026: null, umsatzProKunde2025: 6.28, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 585.02, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 64.65, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 69.19, kassenDifferenz2026: null },
+            { id: 4, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "April", summeUmsatz2025: 43052.65, forecastSoll2026: 46927.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 621.36, summeAusgaben2026: null, anzahlKunden2025: 6370, anzahlKunden2026: null, umsatzProKunde2025: 6.76, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 630.47, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 68.29, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 27.88, kassenDifferenz2026: null },
+            { id: 5, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "Mai", summeUmsatz2025: 44896.67, forecastSoll2026: 48938.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 569.63, summeAusgaben2026: null, anzahlKunden2025: 6386, anzahlKunden2026: null, umsatzProKunde2025: 7.03, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 634.93, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 70.71, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: -41.69, kassenDifferenz2026: null },
+            { id: 6, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "Juni", summeUmsatz2025: 45051.01, forecastSoll2026: 49106.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 818.82, summeAusgaben2026: null, anzahlKunden2025: 6897, anzahlKunden2026: null, umsatzProKunde2025: 6.53, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 637.17, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 70.71, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 26.71, kassenDifferenz2026: null },
+            { id: 7, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "Juli", summeUmsatz2025: 48546.51, forecastSoll2026: 52916.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 486.66, summeAusgaben2026: null, anzahlKunden2025: 7097, anzahlKunden2026: null, umsatzProKunde2025: 6.84, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 648.82, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 74.82, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 710.92, kassenDifferenz2026: null },
+            { id: 8, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "August", summeUmsatz2025: 48732.70, forecastSoll2026: 53119.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 551.03, summeAusgaben2026: null, anzahlKunden2025: 7562, anzahlKunden2026: null, umsatzProKunde2025: 6.44, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 656.67, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 74.21, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 82.74, kassenDifferenz2026: null },
+            { id: 9, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "September", summeUmsatz2025: 48774.34, forecastSoll2026: 53164.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 509.04, summeAusgaben2026: null, anzahlKunden2025: 7216, anzahlKunden2026: null, umsatzProKunde2025: 6.76, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 642.38, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 75.93, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 735.75, kassenDifferenz2026: null },
+            { id: 10, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "Oktober", summeUmsatz2025: 51557.04, forecastSoll2026: 56197.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 1400.45, summeAusgaben2026: null, anzahlKunden2025: 7792, anzahlKunden2026: null, umsatzProKunde2025: 6.62, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 667.13, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 77.28, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 770.43, kassenDifferenz2026: null },
+            { id: 11, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "November", summeUmsatz2025: 56501.87, forecastSoll2026: 61587.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 748.93, summeAusgaben2026: null, anzahlKunden2025: 8328, anzahlKunden2026: null, umsatzProKunde2025: 6.78, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 655.60, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 86.18, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 6.31, kassenDifferenz2026: null },
+            { id: 12, filiale: 1105, filialName: "Filiale Ostbahnhof", monat: "Dezember", summeUmsatz2025: 60313.14, forecastSoll2026: 65741.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 636.68, summeAusgaben2026: null, anzahlKunden2025: 8879, anzahlKunden2026: null, umsatzProKunde2025: 6.79, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 716.15, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 84.22, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: -1.27, kassenDifferenz2026: null },
+
+            // Filiale Potsdam Hbf (1111) - 12 Monate komplett
+            { id: 13, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "Januar", summeUmsatz2025: 46863.60, forecastSoll2026: 51081.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 227.05, summeAusgaben2026: null, anzahlKunden2025: 7994, anzahlKunden2026: null, umsatzProKunde2025: 5.86, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 703.33, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 66.63, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 0.69, kassenDifferenz2026: null },
+            { id: 14, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "Februar", summeUmsatz2025: 40456.54, forecastSoll2026: 44098.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 141.66, summeAusgaben2026: null, anzahlKunden2025: 6945, anzahlKunden2026: null, umsatzProKunde2025: 5.83, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 643.25, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 62.89, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 1.22, kassenDifferenz2026: null },
+            { id: 15, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "März", summeUmsatz2025: 50133.26, forecastSoll2026: 54645.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 139.22, summeAusgaben2026: null, anzahlKunden2025: 8249, anzahlKunden2026: null, umsatzProKunde2025: 6.08, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 706.50, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 70.96, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 639.38, kassenDifferenz2026: null },
+            { id: 16, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "April", summeUmsatz2025: 48810.47, forecastSoll2026: 53204.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 152.70, summeAusgaben2026: null, anzahlKunden2025: 8159, anzahlKunden2026: null, umsatzProKunde2025: 5.98, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 649.62, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 75.14, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: -488.84, kassenDifferenz2026: null },
+            { id: 17, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "Mai", summeUmsatz2025: 52259.45, forecastSoll2026: 56963.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 220.30, summeAusgaben2026: null, anzahlKunden2025: 8622, anzahlKunden2026: null, umsatzProKunde2025: 6.06, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 710.28, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 73.58, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 62.27, kassenDifferenz2026: null },
+            { id: 18, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "Juni", summeUmsatz2025: 50586.57, forecastSoll2026: 55139.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 219.35, summeAusgaben2026: null, anzahlKunden2025: 8346, anzahlKunden2026: null, umsatzProKunde2025: 6.06, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 675.17, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 74.92, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 745.34, kassenDifferenz2026: null },
+            { id: 19, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "Juli", summeUmsatz2025: 56180.19, forecastSoll2026: 61236.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 394.86, summeAusgaben2026: null, anzahlKunden2025: 9305, anzahlKunden2026: null, umsatzProKunde2025: 6.04, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 765.57, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 73.38, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 62.82, kassenDifferenz2026: null },
+            { id: 20, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "August", summeUmsatz2025: 45156.01, forecastSoll2026: 49220.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 202.46, summeAusgaben2026: null, anzahlKunden2025: 7198, anzahlKunden2026: null, umsatzProKunde2025: 6.27, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 717.03, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 62.98, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 30.10, kassenDifferenz2026: null },
+            { id: 21, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "September", summeUmsatz2025: 51688.39, forecastSoll2026: 56340.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 249.84, summeAusgaben2026: null, anzahlKunden2025: 8561, anzahlKunden2026: null, umsatzProKunde2025: 6.04, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 720.52, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 71.74, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 16.63, kassenDifferenz2026: null },
+            { id: 22, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "Oktober", summeUmsatz2025: 57409.79, forecastSoll2026: 62577.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 337.98, summeAusgaben2026: null, anzahlKunden2025: 9349, anzahlKunden2026: null, umsatzProKunde2025: 6.14, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 745.47, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 77.01, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 26.72, kassenDifferenz2026: null },
+            { id: 23, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "November", summeUmsatz2025: 55647.72, forecastSoll2026: 60656.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 303.56, summeAusgaben2026: null, anzahlKunden2025: 9097, anzahlKunden2026: null, umsatzProKunde2025: 6.12, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 706.42, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 78.77, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 135.59, kassenDifferenz2026: null },
+            { id: 24, filiale: 1111, filialName: "Filiale Potsdam Hbf", monat: "Dezember", summeUmsatz2025: 48346.72, forecastSoll2026: 52698.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 226.63, summeAusgaben2026: null, anzahlKunden2025: 7976, anzahlKunden2026: null, umsatzProKunde2025: 6.06, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 655.43, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 73.76, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: -226.42, kassenDifferenz2026: null },
+
+            // Filiale Friedrichstraße (1002) - 12 Monate komplett
+            { id: 25, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "Januar", summeUmsatz2025: 46407.17, forecastSoll2026: 50584.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 341.01, summeAusgaben2026: null, anzahlKunden2025: 7001, anzahlKunden2026: null, umsatzProKunde2025: 6.63, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 789.20, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 58.80, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 63.14, kassenDifferenz2026: null },
+            { id: 26, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "Februar", summeUmsatz2025: 44073.78, forecastSoll2026: 48040.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 222.63, summeAusgaben2026: null, anzahlKunden2025: 6626, anzahlKunden2026: null, umsatzProKunde2025: 6.65, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 697.52, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 63.19, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 780.80, kassenDifferenz2026: null },
+            { id: 27, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "März", summeUmsatz2025: 48740.19, forecastSoll2026: 53127.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 297.91, summeAusgaben2026: null, anzahlKunden2025: 7284, anzahlKunden2026: null, umsatzProKunde2025: 6.69, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 747.43, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 65.21, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: -67.34, kassenDifferenz2026: null },
+            { id: 28, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "April", summeUmsatz2025: 46645.53, forecastSoll2026: 50844.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 339.79, summeAusgaben2026: null, anzahlKunden2025: 6810, anzahlKunden2026: null, umsatzProKunde2025: 6.85, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 727.22, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 64.14, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 1482.89, kassenDifferenz2026: null },
+            { id: 29, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "Mai", summeUmsatz2025: 48443.63, forecastSoll2026: 52804.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 350.07, summeAusgaben2026: null, anzahlKunden2025: 7251, anzahlKunden2026: null, umsatzProKunde2025: 6.68, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 740.25, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 65.44, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 89.49, kassenDifferenz2026: null },
+            { id: 30, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "Juni", summeUmsatz2025: 45832.66, forecastSoll2026: 49958.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 504.98, summeAusgaben2026: null, anzahlKunden2025: 6851, anzahlKunden2026: null, umsatzProKunde2025: 6.69, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 727.97, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 62.96, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 62.68, kassenDifferenz2026: null },
+            { id: 31, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "Juli", summeUmsatz2025: 53492.59, forecastSoll2026: 58307.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 451.59, summeAusgaben2026: null, anzahlKunden2025: 7923, anzahlKunden2026: null, umsatzProKunde2025: 6.75, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 820.12, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 65.23, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 56.09, kassenDifferenz2026: null },
+            { id: 32, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "August", summeUmsatz2025: 44632.07, forecastSoll2026: 48649.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 206.71, summeAusgaben2026: null, anzahlKunden2025: 6347, anzahlKunden2026: null, umsatzProKunde2025: 7.03, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 758.88, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 58.81, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 138.80, kassenDifferenz2026: null },
+            { id: 33, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "September", summeUmsatz2025: 50625.40, forecastSoll2026: 55182.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 183.05, summeAusgaben2026: null, anzahlKunden2025: 7433, anzahlKunden2026: null, umsatzProKunde2025: 6.81, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 757.40, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 66.84, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 60.58, kassenDifferenz2026: null },
+            { id: 34, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "Oktober", summeUmsatz2025: 49398.11, forecastSoll2026: 53844.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 199.84, summeAusgaben2026: null, anzahlKunden2025: 7268, anzahlKunden2026: null, umsatzProKunde2025: 6.80, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 736.17, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 67.10, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: -1.35, kassenDifferenz2026: null },
+            { id: 35, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "November", summeUmsatz2025: 51948.25, forecastSoll2026: 56624.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 289.14, summeAusgaben2026: null, anzahlKunden2025: 7652, anzahlKunden2026: null, umsatzProKunde2025: 6.79, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 749.82, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 69.29, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: 42.17, kassenDifferenz2026: null },
+            { id: 36, filiale: 1002, filialName: "Filiale Friedrichstraße", monat: "Dezember", summeUmsatz2025: 60218.43, forecastSoll2026: 65638.00, teamleiterWunsch: null, forecastIst2026: null, summeAusgaben2025: 412.58, summeAusgaben2026: null, anzahlKunden2025: 8821, anzahlKunden2026: null, umsatzProKunde2025: 6.83, umsatzProKunde2026: null, arbeitsstundenPersonal2025: 812.45, arbeitsstundenTeamleiterSoll2026: 75.00, arbeitsstundenTeamleiterWunsch2026: null, arbeitsstundenPersonal2026Ist: null, umsatzProArbeitsstunde2025: 74.12, umsatzProArbeitsstundeSoll2026: 75.00, umsatzProArbeitsstunde2026Wunsch: null, umsatzProArbeitsstunde2026Ist: null, kassenDifferenz2025: -18.92, kassenDifferenz2026: null }
+        ];
+
+        // Aktueller Monat für Dienstplan
+        let currentScheduleMonth = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
+        
+        // Aktuelle Schicht zum Bearbeiten
+        let currentEditingShift = null;
+
+        // Lohn Gruppen Definition
+        const LOHN_GRUPPEN = {
+            'A': 14.0,
+            'B': 14.5,
+            'C': 14.6,
+            'D': 15.1,
+            'E': 16.1,
+            'F': 18.1,
+            'G': 19.1,
+            'H': 22.1
+        };
+
+        // ==================== HELPER FUNCTIONS ====================
+        
+        function formatCurrency(amount) {
+            if (amount === null || amount === undefined) return '-';
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        function formatNumber(number) {
+            if (number === null || number === undefined) return '-';
+            return new Intl.NumberFormat('de-DE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(number);
+        }
+
+        function getLocationName(id) {
+            const location = LOCATIONS.find(l => l.id === id);
+            return location ? location.name : id;
+        }
+
+        function getLocationColor(id) {
+            const location = LOCATIONS.find(l => l.id === id);
+            return location ? location.color : '#95a5a6';
+        }
+
+        function getDaysInMonth(year, month) {
+            return new Date(year, month, 0).getDate();
+        }
+
+        function getGermanDayName(date) {
+            const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+            return days[date.getDay()];
+        }
+
+        function calculateForecastSoll(umsatz2025) {
+            if (!umsatz2025) return 0;
+            return umsatz2025 * 1.09; // +9%
+        }
+
+        function calculateUmsatzProKunde(umsatz, kunden) {
+            if (!kunden || kunden === 0 || !umsatz) return 0;
+            return umsatz / kunden;
+        }
+
+        function calculateUmsatzProArbeitsstunde(umsatz, stunden) {
+            if (!stunden || stunden === 0 || !umsatz) return 0;
+            return umsatz / stunden;
+        }
+
+        function calculateFixedSalary(employee) {
+            return employee.fixedSalary || 0;
+        }
+
+        // ==================== FORECAST FUNKTIONEN - ALLES EDITIERBAR ====================
+        
+        function loadAllForecastData() {
+            const container = document.getElementById('forecastData');
+            container.innerHTML = '';
+            
+            let totalUmsatz2025 = 0;
+            let totalForecastSoll2026 = 0;
+            let totalTeamleiterWunsch = 0;
+            let totalForecastIst2026 = 0;
+            let totalAusgaben2025 = 0;
+            let totalAusgaben2026 = 0;
+            let totalKunden2025 = 0;
+            let totalKunden2026 = 0;
+            let totalStunden2025 = 0;
+            let totalStundenSoll2026 = 0;
+            let totalStundenWunsch2026 = 0;
+            let totalStundenIst2026 = 0;
+            let totalKassen2025 = 0;
+            let totalKassen2026 = 0;
+            
+            const locationFilter = document.getElementById('forecastLocationFilter').value;
+            const monthFilter = document.getElementById('forecastMonthFilter').value;
+            
+            let filteredData = FORECAST_DATA;
+            
+            if (locationFilter !== 'all') {
+                filteredData = filteredData.filter(item => item.filiale == locationFilter);
+            }
+            
+            if (monthFilter !== 'all') {
+                filteredData = filteredData.filter(item => item.monat === monthFilter);
+            }
+            
+            filteredData.forEach((data) => {
+                // Berechne abgeleitete Werte (diese sind NICHT editierbar, da berechnet)
+                const forecastSoll = calculateForecastSoll(data.summeUmsatz2025);
+                const umsatzProKunde2025 = calculateUmsatzProKunde(data.summeUmsatz2025, data.anzahlKunden2025);
+                const umsatzProArbeitsstunde2025 = calculateUmsatzProArbeitsstunde(data.summeUmsatz2025, data.arbeitsstundenPersonal2025);
+                
+                let umsatzProKunde2026 = null;
+                if (data.anzahlKunden2026 && data.forecastIst2026) {
+                    umsatzProKunde2026 = calculateUmsatzProKunde(data.forecastIst2026, data.anzahlKunden2026);
+                }
+                
+                let umsatzProArbeitsstunde2026 = null;
+                if (data.arbeitsstundenPersonal2026Ist && data.forecastIst2026) {
+                    umsatzProArbeitsstunde2026 = calculateUmsatzProArbeitsstunde(data.forecastIst2026, data.arbeitsstundenPersonal2026Ist);
+                }
+                
+                let umsatzProArbeitsstundeSoll2026 = null;
+                if (data.arbeitsstundenTeamleiterSoll2026 && data.forecastSoll2026) {
+                    umsatzProArbeitsstundeSoll2026 = calculateUmsatzProArbeitsstunde(data.forecastSoll2026, data.arbeitsstundenTeamleiterSoll2026);
+                }
+                
+                let umsatzProArbeitsstundeWunsch2026 = null;
+                if (data.arbeitsstundenTeamleiterWunsch2026 && data.teamleiterWunsch) {
+                    umsatzProArbeitsstundeWunsch2026 = calculateUmsatzProArbeitsstunde(data.teamleiterWunsch, data.arbeitsstundenTeamleiterWunsch2026);
+                }
+                
+                // Summen berechnen (nur für editierbare Felder)
+                totalUmsatz2025 += (data.summeUmsatz2025 || 0);
+                totalForecastSoll2026 += (data.forecastSoll2026 || 0);
+                totalTeamleiterWunsch += (data.teamleiterWunsch || 0);
+                totalForecastIst2026 += (data.forecastIst2026 || 0);
+                totalAusgaben2025 += (data.summeAusgaben2025 || 0);
+                totalAusgaben2026 += (data.summeAusgaben2026 || 0);
+                totalKunden2025 += (data.anzahlKunden2025 || 0);
+                totalKunden2026 += (data.anzahlKunden2026 || 0);
+                totalStunden2025 += (data.arbeitsstundenPersonal2025 || 0);
+                totalStundenSoll2026 += (data.arbeitsstundenTeamleiterSoll2026 || 0);
+                totalStundenWunsch2026 += (data.arbeitsstundenTeamleiterWunsch2026 || 0);
+                totalStundenIst2026 += (data.arbeitsstundenPersonal2026Ist || 0);
+                totalKassen2025 += (data.kassenDifferenz2025 || 0);
+                totalKassen2026 += (data.kassenDifferenz2026 || 0);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'id')">${data.id}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'filiale')">${data.filiale || '-'}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'filialName')">${data.filialName || '-'}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'monat')">${data.monat || '-'}</td>
+                    <td class="editable-cell currency" onclick="editForecastCell(${data.id}, 'summeUmsatz2025')">${formatCurrency(data.summeUmsatz2025)}</td>
+                    <td class="editable-cell currency" onclick="editForecastCell(${data.id}, 'forecastSoll2026')">${formatCurrency(data.forecastSoll2026 || 0)}</td>
+                    <td class="editable-cell currency" onclick="editForecastCell(${data.id}, 'teamleiterWunsch')">${data.teamleiterWunsch !== null && data.teamleiterWunsch !== undefined ? formatCurrency(data.teamleiterWunsch) : '0'}</td>
+                    <td class="editable-cell currency" onclick="editForecastCell(${data.id}, 'forecastIst2026')">${data.forecastIst2026 !== null && data.forecastIst2026 !== undefined ? formatCurrency(data.forecastIst2026) : '0'}</td>
+                    <td class="editable-cell currency" onclick="editForecastCell(${data.id}, 'summeAusgaben2025')">${formatCurrency(data.summeAusgaben2025)}</td>
+                    <td class="editable-cell currency" onclick="editForecastCell(${data.id}, 'summeAusgaben2026')">${data.summeAusgaben2026 !== null && data.summeAusgaben2026 !== undefined ? formatCurrency(data.summeAusgaben2026) : '0'}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'anzahlKunden2025')">${data.anzahlKunden2025 || '0'}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'anzahlKunden2026')">${data.anzahlKunden2026 !== null && data.anzahlKunden2026 !== undefined ? data.anzahlKunden2026 : '0'}</td>
+                    <td class="currency">${formatNumber(umsatzProKunde2025)}</td>
+                    <td class="currency">${umsatzProKunde2026 !== null ? formatNumber(umsatzProKunde2026) : '0'}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'arbeitsstundenPersonal2025')">${formatNumber(data.arbeitsstundenPersonal2025)}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'arbeitsstundenTeamleiterSoll2026')">${formatNumber(data.arbeitsstundenTeamleiterSoll2026 || 0)}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'arbeitsstundenTeamleiterWunsch2026')">${data.arbeitsstundenTeamleiterWunsch2026 !== null && data.arbeitsstundenTeamleiterWunsch2026 !== undefined ? formatNumber(data.arbeitsstundenTeamleiterWunsch2026) : '0'}</td>
+                    <td class="editable-cell" onclick="editForecastCell(${data.id}, 'arbeitsstundenPersonal2026Ist')">${data.arbeitsstundenPersonal2026Ist !== null && data.arbeitsstundenPersonal2026Ist !== undefined ? formatNumber(data.arbeitsstundenPersonal2026Ist) : '0'}</td>
+                    <td class="currency">${formatNumber(umsatzProArbeitsstunde2025)}</td>
+                    <td class="currency">${umsatzProArbeitsstundeSoll2026 ? formatNumber(umsatzProArbeitsstundeSoll2026) : '0'}</td>
+                    <td class="currency">${umsatzProArbeitsstundeWunsch2026 ? formatNumber(umsatzProArbeitsstundeWunsch2026) : '0'}</td>
+                    <td class="currency">${umsatzProArbeitsstunde2026 !== null ? formatNumber(umsatzProArbeitsstunde2026) : '0'}</td>
+                    <td class="editable-cell currency" onclick="editForecastCell(${data.id}, 'kassenDifferenz2025')">${formatCurrency(data.kassenDifferenz2025)}</td>
+                    <td class="editable-cell currency" onclick="editForecastCell(${data.id}, 'kassenDifferenz2026')">${data.kassenDifferenz2026 !== null && data.kassenDifferenz2026 !== undefined ? formatCurrency(data.kassenDifferenz2026) : '0'}</td>
+                    <td>
+                        <button class="btn" onclick="openForecastModal(${data.id})" style="padding: 4px 8px; font-size: 11px;">✏️ Detail</button>
+                        <button class="btn btn-danger" onclick="deleteForecastRow(${data.id})" style="padding: 4px 8px; font-size: 11px;">🗑️</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+            
+            // Gesamtsummen aktualisieren
+            document.getElementById('totalUmsatz2025Foot').textContent = formatCurrency(totalUmsatz2025);
+            document.getElementById('totalForecastSoll2026').textContent = formatCurrency(totalForecastSoll2026);
+            document.getElementById('totalTeamleiterWunsch').textContent = formatCurrency(totalTeamleiterWunsch);
+            document.getElementById('totalForecastIst2026').textContent = formatCurrency(totalForecastIst2026);
+            document.getElementById('totalAusgaben2025').textContent = formatCurrency(totalAusgaben2025);
+            document.getElementById('totalAusgaben2026').textContent = formatCurrency(totalAusgaben2026);
+            document.getElementById('totalKunden2025').textContent = totalKunden2025.toLocaleString('de-DE');
+            document.getElementById('totalKunden2026').textContent = totalKunden2026.toLocaleString('de-DE');
+            document.getElementById('totalStunden2025').textContent = formatNumber(totalStunden2025);
+            document.getElementById('totalKassen2025').textContent = formatCurrency(totalKassen2025);
+            document.getElementById('totalKassen2026').textContent = formatCurrency(totalKassen2026);
+            
+            // Dashboard aktualisieren
+            updateForecastDashboard();
+        }
+
+        function editForecastCell(id, field) {
+            const data = FORECAST_DATA.find(item => item.id === id);
+            if (!data) return;
+            
+            const cell = event.target;
+            const currentValue = data[field];
+            
+            // Bestehende Inputs entfernen
+            document.querySelectorAll('.input-cell').forEach(input => {
+                if (input.parentNode) {
+                    input.parentNode.innerHTML = input.value !== '' ? input.value : '0';
+                }
+            });
+            
+            let inputType = 'text';
+            let step = '0.01';
+            
+            // Bestimme Input-Typ basierend auf Feld
+            if (field === 'id' || field === 'filiale') {
+                inputType = 'number';
+                step = '1';
+            } else if (field === 'monat') {
+                // Für Monat verwenden wir ein Select
+                const select = document.createElement('select');
+                select.className = 'input-cell';
+                select.style.width = '100%';
+                
+                const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+                               'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+                
+                months.forEach(month => {
+                    const option = document.createElement('option');
+                    option.value = month;
+                    option.textContent = month;
+                    if (month === currentValue) option.selected = true;
+                    select.appendChild(option);
+                });
+                
+                cell.innerHTML = '';
+                cell.appendChild(select);
+                select.focus();
+                
+                select.addEventListener('blur', function() {
+                    saveForecastCell(id, field, select.value);
+                });
+                
+                select.addEventListener('change', function() {
+                    saveForecastCell(id, field, select.value);
+                });
+                
+                return;
+            } else if (field === 'filialName') {
+                inputType = 'text';
+            } else if (field.includes('Umsatz') || field.includes('Ausgaben') || field.includes('Differenz') || 
+                       field.includes('Wunsch') || field === 'forecastIst2026' || field === 'teamleiterWunsch' ||
+                       field === 'forecastSoll2026') {
+                inputType = 'number';
+                step = '0.01';
+            } else if (field.includes('Kunden')) {
+                inputType = 'number';
+                step = '1';
+            } else if (field.includes('Stunden') || field.includes('arbeitsstunden')) {
+                inputType = 'number';
+                step = '0.5';
+            }
+            
+            const input = document.createElement('input');
+            input.type = inputType;
+            input.value = currentValue !== null && currentValue !== undefined ? currentValue : '';
+            input.className = 'input-cell';
+            input.style.width = '100%';
+            input.style.padding = '4px';
+            input.style.border = '1px solid #3498db';
+            input.style.borderRadius = '4px';
+            
+            if (inputType === 'number') {
+                input.step = step;
+                input.min = '0';
+            }
+            
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+            input.select();
+            
+            input.addEventListener('blur', function() {
+                saveForecastCell(id, field, input.value);
+            });
+            
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveForecastCell(id, field, input.value);
+                }
+            });
+        }
+
+        function saveForecastCell(id, field, value) {
+            const data = FORECAST_DATA.find(item => item.id === id);
+            if (!data) return;
+            
+            let newValue;
+            
+            if (value === '' || value === null || value === undefined) {
+                newValue = null;
+            } else if (field === 'id' || field === 'filiale') {
+                newValue = parseInt(value) || 0;
+            } else if (field === 'filialName' || field === 'monat') {
+                newValue = value;
+            } else if (field.includes('Umsatz') || field.includes('Ausgaben') || field.includes('Differenz') || 
+                       field.includes('Wunsch') || field === 'forecastIst2026' || field === 'teamleiterWunsch' ||
+                       field === 'forecastSoll2026') {
+                newValue = parseFloat(value) || 0;
+            } else if (field.includes('Kunden')) {
+                newValue = parseInt(value) || 0;
+            } else if (field.includes('Stunden') || field.includes('arbeitsstunden')) {
+                newValue = parseFloat(value) || 0;
+            } else {
+                newValue = value;
+            }
+            
+            data[field] = newValue;
+            
+            // Aktualisiere abgeleitete Werte wenn nötig
+            if (field === 'summeUmsatz2025') {
+                data.forecastSoll2026 = calculateForecastSoll(data.summeUmsatz2025);
+            }
+            
+            loadAllForecastData();
+        }
+
+        function openForecastModal(id) {
+            const data = FORECAST_DATA.find(item => item.id === id);
+            if (!data) return;
+            
+            const modalContent = `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Filiale</label>
+                        <input type="number" id="modalFiliale" value="${data.filiale || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Filial-Name</label>
+                        <input type="text" id="modalFilialName" value="${data.filialName || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Monat</label>
+                        <select id="modalMonat">
+                            <option value="Januar" ${data.monat === 'Januar' ? 'selected' : ''}>Januar</option>
+                            <option value="Februar" ${data.monat === 'Februar' ? 'selected' : ''}>Februar</option>
+                            <option value="März" ${data.monat === 'März' ? 'selected' : ''}>März</option>
+                            <option value="April" ${data.monat === 'April' ? 'selected' : ''}>April</option>
+                            <option value="Mai" ${data.monat === 'Mai' ? 'selected' : ''}>Mai</option>
+                            <option value="Juni" ${data.monat === 'Juni' ? 'selected' : ''}>Juni</option>
+                            <option value="Juli" ${data.monat === 'Juli' ? 'selected' : ''}>Juli</option>
+                            <option value="August" ${data.monat === 'August' ? 'selected' : ''}>August</option>
+                            <option value="September" ${data.monat === 'September' ? 'selected' : ''}>September</option>
+                            <option value="Oktober" ${data.monat === 'Oktober' ? 'selected' : ''}>Oktober</option>
+                            <option value="November" ${data.monat === 'November' ? 'selected' : ''}>November</option>
+                            <option value="Dezember" ${data.monat === 'Dezember' ? 'selected' : ''}>Dezember</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Summe Umsatz 2025</label>
+                        <input type="number" step="0.01" id="modalUmsatz2025" value="${data.summeUmsatz2025 || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Teamleiter Wünsch</label>
+                        <input type="number" step="0.01" id="modalTeamleiterWunsch" value="${data.teamleiterWunsch || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Forecast Ist 2026</label>
+                        <input type="number" step="0.01" id="modalForecastIst2026" value="${data.forecastIst2026 || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Summe Ausgaben 2025</label>
+                        <input type="number" step="0.01" id="modalAusgaben2025" value="${data.summeAusgaben2025 || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Summe Ausgaben 2026</label>
+                        <input type="number" step="0.01" id="modalAusgaben2026" value="${data.summeAusgaben2026 || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Anzahl Kunden 2025</label>
+                        <input type="number" id="modalKunden2025" value="${data.anzahlKunden2025 || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Anzahl Kunden 2026</label>
+                        <input type="number" id="modalKunden2026" value="${data.anzahlKunden2026 || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Arbeitsstunden Personal 2025</label>
+                        <input type="number" step="0.5" id="modalStunden2025" value="${data.arbeitsstundenPersonal2025 || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Arbeitsstunden Personal 2026 ist</label>
+                        <input type="number" step="0.5" id="modalStunden2026Ist" value="${data.arbeitsstundenPersonal2026Ist || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Arbeitsstunden Teamleiter Soll 2026</label>
+                        <input type="number" step="0.5" id="modalTeamleiterSoll2026" value="${data.arbeitsstundenTeamleiterSoll2026 || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Arbeitsstunden Teamleiter Wünsch 2026</label>
+                        <input type="number" step="0.5" id="modalTeamleiterWunsch2026" value="${data.arbeitsstundenTeamleiterWunsch2026 || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Umsatz pro Arbeitsstunde Soll 2026</label>
+                        <input type="number" step="0.01" id="modalUmsatzProStundeSoll" value="${data.umsatzProArbeitsstundeSoll2026 || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Umsatz pro Arbeitsstunde Wünsch 2026</label>
+                        <input type="number" step="0.01" id="modalUmsatzProStundeWunsch" value="${data.umsatzProArbeitsstunde2026Wunsch || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kassen Differenz 2025</label>
+                        <input type="number" step="0.01" id="modalKassen2025" value="${data.kassenDifferenz2025 || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Kassen Differenz 2026</label>
+                        <input type="number" step="0.01" id="modalKassen2026" value="${data.kassenDifferenz2026 || ''}">
+                    </div>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn" onclick="saveForecastModal(${id})">💾 Alle Felder speichern</button>
+                    <button class="btn btn-danger" onclick="closeForecastModal()">❌ Abbrechen</button>
+                </div>
+            `;
+            
+            document.getElementById('forecastModalContent').innerHTML = modalContent;
+            document.getElementById('forecastModal').style.display = 'block';
+            document.getElementById('modalOverlay').style.display = 'block';
+        }
+
+        function saveForecastModal(id) {
+            const data = FORECAST_DATA.find(item => item.id === id);
+            if (!data) return;
+            
+            // Alle Felder aktualisieren
+            data.filiale = parseInt(document.getElementById('modalFiliale').value) || 0;
+            data.filialName = document.getElementById('modalFilialName').value;
+            data.monat = document.getElementById('modalMonat').value;
+            data.summeUmsatz2025 = parseFloat(document.getElementById('modalUmsatz2025').value) || 0;
+            data.teamleiterWunsch = document.getElementById('modalTeamleiterWunsch').value ? parseFloat(document.getElementById('modalTeamleiterWunsch').value) : null;
+            data.forecastIst2026 = document.getElementById('modalForecastIst2026').value ? parseFloat(document.getElementById('modalForecastIst2026').value) : null;
+            data.summeAusgaben2025 = parseFloat(document.getElementById('modalAusgaben2025').value) || 0;
+            data.summeAusgaben2026 = document.getElementById('modalAusgaben2026').value ? parseFloat(document.getElementById('modalAusgaben2026').value) : null;
+            data.anzahlKunden2025 = parseInt(document.getElementById('modalKunden2025').value) || 0;
+            data.anzahlKunden2026 = document.getElementById('modalKunden2026').value ? parseInt(document.getElementById('modalKunden2026').value) : null;
+            data.arbeitsstundenPersonal2025 = parseFloat(document.getElementById('modalStunden2025').value) || 0;
+            data.arbeitsstundenPersonal2026Ist = document.getElementById('modalStunden2026Ist').value ? parseFloat(document.getElementById('modalStunden2026Ist').value) : null;
+            data.arbeitsstundenTeamleiterSoll2026 = parseFloat(document.getElementById('modalTeamleiterSoll2026').value) || 0;
+            data.arbeitsstundenTeamleiterWunsch2026 = document.getElementById('modalTeamleiterWunsch2026').value ? parseFloat(document.getElementById('modalTeamleiterWunsch2026').value) : null;
+            data.umsatzProArbeitsstundeSoll2026 = parseFloat(document.getElementById('modalUmsatzProStundeSoll').value) || 0;
+            data.umsatzProArbeitsstunde2026Wunsch = document.getElementById('modalUmsatzProStundeWunsch').value ? parseFloat(document.getElementById('modalUmsatzProStundeWunsch').value) : null;
+            data.kassenDifferenz2025 = parseFloat(document.getElementById('modalKassen2025').value) || 0;
+            data.kassenDifferenz2026 = document.getElementById('modalKassen2026').value ? parseFloat(document.getElementById('modalKassen2026').value) : null;
+            
+            // Automatische Berechnungen
+            data.forecastSoll2026 = calculateForecastSoll(data.summeUmsatz2025);
+            
+            closeForecastModal();
+            loadAllForecastData();
+            alert('Alle Daten wurden gespeichert!');
+        }
+
+        function closeForecastModal() {
+            document.getElementById('forecastModal').style.display = 'none';
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
+        function addNewForecastRow() {
+            const newId = Math.max(...FORECAST_DATA.map(item => item.id)) + 1;
+            const newRow = {
+                id: newId,
+                filiale: 0,
+                filialName: "",
+                monat: "Januar",
+                summeUmsatz2025: 0,
+                forecastSoll2026: 0,
+                teamleiterWunsch: null,
+                forecastIst2026: null,
+                summeAusgaben2025: 0,
+                summeAusgaben2026: null,
+                anzahlKunden2025: 0,
+                anzahlKunden2026: null,
+                umsatzProKunde2025: 0,
+                umsatzProKunde2026: null,
+                arbeitsstundenPersonal2025: 0,
+                arbeitsstundenTeamleiterSoll2026: 75.00,
+                arbeitsstundenTeamleiterWunsch2026: null,
+                arbeitsstundenPersonal2026Ist: null,
+                umsatzProArbeitsstunde2025: 0,
+                umsatzProArbeitsstundeSoll2026: 75.00,
+                umsatzProArbeitsstunde2026Wunsch: null,
+                umsatzProArbeitsstunde2026Ist: null,
+                kassenDifferenz2025: 0,
+                kassenDifferenz2026: null
+            };
+            
+            FORECAST_DATA.push(newRow);
+            loadAllForecastData();
+            alert('Neue Zeile wurde hinzugefügt!');
+        }
+
+        function deleteForecastRow(id) {
+            if (confirm('Möchten Sie diese Zeile wirklich löschen?')) {
+                const index = FORECAST_DATA.findIndex(item => item.id === id);
+                if (index > -1) {
+                    FORECAST_DATA.splice(index, 1);
+                    loadAllForecastData();
+                    alert('Zeile wurde gelöscht!');
+                }
+            }
+        }
+
+        function recalculateAllForecast() {
+            FORECAST_DATA.forEach(data => {
+                // Forecast Soll 2026 (automatisch +9%)
+                data.forecastSoll2026 = calculateForecastSoll(data.summeUmsatz2025);
+            });
+            
+            loadAllForecastData();
+            alert('Alle Berechnungen wurden aktualisiert!');
+        }
+
+        function filterForecastData() {
+            loadAllForecastData();
+        }
+
+        function exportForecastToExcel() {
+            let csvContent = 'ID,Filiale,Filial-Name,Monat,Summe Umsatz 2025,Forcast Für Soll 2026,Teamleiter Wünsch,Forcast Ist 2026,Summe Ausgaben 2025,Summe Ausgaben 2026,Anzahl Kunden 2025,Anzahl Kunden 2026,Umsatz pro Kunde 2025,Umsatz pro Kunde 2026,Arbeitsstunden Personal 2025,Arbeitsstunden Personal Teamleiter soll 2026,Arbeitsstunden Personal Teamleiter wünsch 2026,Arbeitsstunden Personal 2026 ist,Umsatz pro Arbeitsstunde 2025,Umsatz pro Arbeitsstunde soll 2026,Umsatz pro Arbeitsstunde 2026 wünsch,Umsatz pro Arbeitsstunde 2026 ist,Kassen Differenz 2025,Kassen Differenz 2026\n';
+            
+            FORECAST_DATA.forEach(data => {
+                const forecastSoll = calculateForecastSoll(data.summeUmsatz2025);
+                const umsatzProKunde2025 = calculateUmsatzProKunde(data.summeUmsatz2025, data.anzahlKunden2025);
+                const umsatzProArbeitsstunde2025 = calculateUmsatzProArbeitsstunde(data.summeUmsatz2025, data.arbeitsstundenPersonal2025);
+                
+                const umsatzProKunde2026 = data.anzahlKunden2026 && data.forecastIst2026 ? calculateUmsatzProKunde(data.forecastIst2026, data.anzahlKunden2026) : '';
+                const umsatzProArbeitsstunde2026 = data.arbeitsstundenPersonal2026Ist && data.forecastIst2026 ? calculateUmsatzProArbeitsstunde(data.forecastIst2026, data.arbeitsstundenPersonal2026Ist) : '';
+                
+                csvContent += `${data.id},${data.filiale},"${data.filialName}","${data.monat}",${data.summeUmsatz2025},${forecastSoll},${data.teamleiterWunsch || ''},${data.forecastIst2026 || ''},${data.summeAusgaben2025},${data.summeAusgaben2026 || ''},${data.anzahlKunden2025},${data.anzahlKunden2026 || ''},${umsatzProKunde2025},${umsatzProKunde2026 || ''},${data.arbeitsstundenPersonal2025},${data.arbeitsstundenTeamleiterSoll2026},${data.arbeitsstundenTeamleiterWunsch2026 || ''},${data.arbeitsstundenPersonal2026Ist || ''},${umsatzProArbeitsstunde2025},${data.umsatzProArbeitsstundeSoll2026},${data.umsatzProArbeitsstunde2026Wunsch || ''},${umsatzProArbeitsstunde2026 || ''},${data.kassenDifferenz2025},${data.kassenDifferenz2026 || ''}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Forecast_Daten_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('Forecast-Daten wurden als CSV exportiert!');
+        }
+
+        function updateForecastDashboard() {
+            // Berechne Gesamtwerte
+            let totalUmsatz2025 = 0;
+            let totalForecastSoll2026 = 0;
+            
+            FORECAST_DATA.forEach(data => {
+                totalUmsatz2025 += (data.summeUmsatz2025 || 0);
+                totalForecastSoll2026 += (data.forecastSoll2026 || 0);
+            });
+            
+            const growthRate = totalUmsatz2025 > 0 ? ((totalForecastSoll2026 - totalUmsatz2025) / totalUmsatz2025 * 100).toFixed(1) : 0;
+            
+            document.getElementById('totalUmsatz2025').textContent = formatCurrency(totalUmsatz2025);
+            document.getElementById('totalForecast2026').textContent = formatCurrency(totalForecastSoll2026);
+            document.getElementById('forecastGrowth').textContent = `+${growthRate}%`;
+        }
+
+        // ==================== DASHBOARD FUNKTIONEN ====================
+        
+        function loadDashboard() {
+            updateDashboardStats();
+            createLocationHoursChart();
+            loadLocationOverview();
+            updateForecastDashboard();
+        }
+        
+        function updateDashboardStats() {
+            const activeLocations = LOCATIONS.filter(l => l.active).length;
+            const totalEmployees = ALL_EMPLOYEES.length;
+            
+            // Berechne geplante Stunden und geschätzte Kosten
+            let totalPlannedHours = 0;
+            let estimatedCosts = 0;
+            
+            Object.keys(SCHEDULES).forEach(monthKey => {
+                const monthData = SCHEDULES[monthKey];
+                Object.keys(monthData).forEach(dateStr => {
+                    monthData[dateStr].forEach(shift => {
+                        totalPlannedHours += shift.hours || 0;
+                        
+                        // Finde Mitarbeiter für Stundensatz
+                        const employee = ALL_EMPLOYEES.find(e => e.id === shift.employeeId);
+                        if (employee && employee.hourlyRate > 0) {
+                            estimatedCosts += (shift.hours || 0) * employee.hourlyRate;
+                        }
+                    });
+                });
+            });
+            
+            // Füge Festgehälter und externe Kosten hinzu
+            let fixedSalariesTotal = 0;
+            ALL_EMPLOYEES.forEach(emp => {
+                if (emp.type === 'festgehalt' || emp.type === 'extern') {
+                    fixedSalariesTotal += calculateFixedSalary(emp);
+                }
+            });
+            
+            // Gesamtkosten
+            const bruttoCosts = estimatedCosts + fixedSalariesTotal;
+            const nkCosts = bruttoCosts * 0.18;
+            const totalWithNK = bruttoCosts + nkCosts;
+            
+            document.getElementById('totalEmployees').textContent = totalEmployees;
+            document.getElementById('activeLocations').textContent = activeLocations;
+            document.getElementById('totalPlannedHours').textContent = totalPlannedHours;
+            document.getElementById('estimatedSalaryCosts').textContent = formatCurrency(totalWithNK);
+            
+            // Detaillierte Kosten anzeigen
+            document.getElementById('bruttoCosts').textContent = formatCurrency(bruttoCosts);
+            document.getElementById('nkCosts').textContent = formatCurrency(nkCosts);
+            document.getElementById('totalWithNK').textContent = formatCurrency(totalWithNK);
+            
+            // Aktuelle Monate
+            const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+                           'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+            const currentDate = new Date();
+            document.getElementById('currentMonth').textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            document.getElementById('dashboardMonth').textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+        }
+        
+        function loadLocationOverview() {
+            const container = document.getElementById('locationOverview');
+            container.innerHTML = '';
+            
+            LOCATIONS.filter(l => l.active).forEach(location => {
+                const employees = ALL_EMPLOYEES.filter(e => e.location === location.id && e.active);
+                
+                // Berechne geplante Stunden für diesen Standort im aktuellen Monat
+                let locationHours = 0;
+                let locationCosts = 0;
+                const monthData = SCHEDULES[currentScheduleMonth] || {};
+                Object.keys(monthData).forEach(dateStr => {
+                    monthData[dateStr].forEach(shift => {
+                        const employee = ALL_EMPLOYEES.find(e => e.id === shift.employeeId);
+                        if (employee && employee.location === location.id) {
+                            locationHours += shift.hours || 0;
+                            if (employee.hourlyRate > 0) {
+                                locationCosts += (shift.hours || 0) * employee.hourlyRate;
+                            }
+                        }
+                    });
+                });
+                
+                // Füge Festgehälter für diesen Standort hinzu
+                ALL_EMPLOYEES.filter(e => e.location === location.id && (e.type === 'festgehalt' || e.type === 'extern')).forEach(emp => {
+                    locationCosts += calculateFixedSalary(emp);
+                });
+                
+                const card = document.createElement('div');
+                card.className = 'location-card';
+                card.style.borderTopColor = location.color;
+                
+                card.innerHTML = `
+                    <h4>${location.name}</h4>
+                    <p style="font-size: 12px; color: #7f8c8d;">${location.address}</p>
+                    <div class="location-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${employees.length}</div>
+                            <div class="stat-label">Mitarbeiter</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${locationHours}</div>
+                            <div class="stat-label">Geplante h</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${formatCurrency(locationCosts)}</div>
+                            <div class="stat-label">Kosten</div>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="showSection('dienstplan'); loadDienstplanForLocation('${location.id}')" style="margin-top: 15px; width: 100%; padding: 8px;">📋 Dienstplan</button>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        function createLocationHoursChart() {
+            const canvas = document.getElementById('locationHoursChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Sammle Stunden pro Standort
+            const locationHours = {};
+            LOCATIONS.filter(l => l.active).forEach(location => {
+                locationHours[location.id] = 0;
+            });
+            
+            // Zähle Stunden im aktuellen Monat
+            const monthData = SCHEDULES[currentScheduleMonth] || {};
+            Object.keys(monthData).forEach(dateStr => {
+                monthData[dateStr].forEach(shift => {
+                    const employee = ALL_EMPLOYEES.find(e => e.id === shift.employeeId);
+                    if (employee && locationHours.hasOwnProperty(employee.location)) {
+                        locationHours[employee.location] += shift.hours || 0;
+                    }
+                });
+            });
+            
+            const locationIds = Object.keys(locationHours);
+            const hours = Object.values(locationHours);
+            const maxHours = Math.max(...hours, 1);
+            
+            const barWidth = 30;
+            const spacing = 20;
+            const startX = 50;
+            const maxHeight = 150;
+            
+            locationIds.forEach((locationId, index) => {
+                const hourCount = locationHours[locationId];
+                const height = (hourCount / maxHours) * maxHeight;
+                const x = startX + (barWidth + spacing) * index;
+                
+                ctx.fillStyle = getLocationColor(locationId);
+                ctx.fillRect(x, canvas.height - height - 40, barWidth, height);
+                
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                
+                // Standortname (gekürzt)
+                const locationName = getLocationName(locationId);
+                const shortName = locationName.length > 8 ? locationName.substring(0, 6) + '..' : locationName;
+                ctx.fillText(shortName, x + barWidth/2, canvas.height - 20);
+                
+                // Stunden
+                ctx.fillText(hourCount + 'h', x + barWidth/2, canvas.height - height - 45);
+            });
+        }
+
+        // ==================== STANDORT MANAGEMENT ====================
+        
+        function loadLocations() {
+            loadLocationOptions();
+            
+            const container = document.getElementById('locationsList');
+            container.innerHTML = '';
+            
+            LOCATIONS.forEach(location => {
+                const employees = ALL_EMPLOYEES.filter(e => e.location === location.id && e.active);
+                
+                // Berechne Stunden für diesen Standort
+                let totalHours = 0;
+                const monthData = SCHEDULES[currentScheduleMonth] || {};
+                Object.keys(monthData).forEach(dateStr => {
+                    monthData[dateStr].forEach(shift => {
+                        const employee = ALL_EMPLOYEES.find(e => e.id === shift.employeeId);
+                        if (employee && employee.location === location.id) {
+                            totalHours += shift.hours || 0;
+                        }
+                    });
+                });
+                
+                const card = document.createElement('div');
+                card.className = 'location-card';
+                card.style.borderTopColor = location.color;
+                
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4>${location.name} ${!location.active ? '(Inaktiv)' : ''}</h4>
+                        <div class="employee-status-control">
+                            <label>Aktiv:</label>
+                            <input type="checkbox" ${location.active ? 'checked' : ''} onchange="toggleLocationActive('${location.id}', this.checked)">
+                        </div>
+                    </div>
+                    <p style="font-size: 12px; color: #7f8c8d;">${location.address}</p>
+                    <div class="location-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${employees.length}/${location.maxEmployees}</div>
+                            <div class="stat-label">Mitarbeiter</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${totalHours}h</div>
+                            <div class="stat-label">Geplante h</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn" onclick="editLocation('${location.id}')" style="padding: 6px 12px; font-size: 12px;">✏️ Bearbeiten</button>
+                        <button class="btn btn-danger" onclick="deleteLocation('${location.id}')" style="padding: 6px 12px; font-size: 12px;">🗑️ Löschen</button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        function loadLocationOptions() {
+            const selects = ['locationFilter', 'dienstplanLocation', 'newLocation', 'shiftEmployee'];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const firstOption = select.options[0] ? select.options[0].outerHTML : '';
+                    select.innerHTML = firstOption;
+                    
+                    LOCATIONS.filter(l => l.active).forEach(location => {
+                        const option = document.createElement('option');
+                        option.value = location.id;
+                        option.textContent = location.name;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+        
+        function addNewLocation() {
+            const name = document.getElementById('newLocationName').value;
+            const id = document.getElementById('newLocationId').value.toLowerCase();
+            const address = document.getElementById('newLocationAddress').value;
+            const color = document.getElementById('newLocationColor').value;
+            const maxEmployees = parseInt(document.getElementById('newLocationMaxEmployees').value) || 10;
+            
+            if (!name || !id) {
+                alert('Bitte geben Sie einen Namen und eine ID für den Standort ein.');
+                return;
+            }
+            
+            if (LOCATIONS.find(l => l.id === id)) {
+                alert('Diese Standort-ID existiert bereits. Bitte wählen Sie eine andere.');
+                return;
+            }
+            
+            const newLocation = {
+                id: id,
+                name: name,
+                color: color,
+                address: address,
+                maxEmployees: maxEmployees,
+                active: true
+            };
+            
+            LOCATIONS.push(newLocation);
+            
+            // Formular zurücksetzen
+            document.getElementById('newLocationName').value = '';
+            document.getElementById('newLocationId').value = '';
+            document.getElementById('newLocationAddress').value = '';
+            document.getElementById('newLocationColor').value = '#3498db';
+            document.getElementById('newLocationMaxEmployees').value = '10';
+            
+            loadLocations();
+            loadDashboard();
+            loadLocationOptions();
+            
+            alert(`Standort "${name}" wurde erfolgreich hinzugefügt!`);
+        }
+        
+        function toggleLocationActive(locationId, active) {
+            const location = LOCATIONS.find(l => l.id === locationId);
+            if (location) {
+                location.active = active;
+                loadLocations();
+                loadDashboard();
+                loadLocationOptions();
+            }
+        }
+        
+        function editLocation(locationId) {
+            const location = LOCATIONS.find(l => l.id === locationId);
+            if (!location) return;
+            
+            const newName = prompt('Neuer Standortname:', location.name);
+            const newAddress = prompt('Neue Adresse:', location.address);
+            
+            if (newName !== null) location.name = newName;
+            if (newAddress !== null) location.address = newAddress;
+            
+            loadLocations();
+            loadDashboard();
+            loadLocationOptions();
+        }
+        
+        function deleteLocation(locationId) {
+            if (!confirm('Möchten Sie diesen Standort wirklich löschen?')) return;
+            
+            const employeesAtLocation = ALL_EMPLOYEES.filter(e => e.location === locationId);
+            if (employeesAtLocation.length > 0) {
+                if (!confirm(`${employeesAtLocation.length} Mitarbeiter sind diesem Standort zugewiesen. Sie werden zu "Sonstige" verschoben. Fortfahren?`)) {
+                    return;
+                }
+                
+                ALL_EMPLOYEES.forEach(emp => {
+                    if (emp.location === locationId) {
+                        emp.location = 'sonstige';
+                    }
+                });
+            }
+            
+            const index = LOCATIONS.findIndex(l => l.id === locationId);
+            if (index > -1) {
+                LOCATIONS.splice(index, 1);
+            }
+            
+            loadLocations();
+            loadDashboard();
+            loadAllEmployees();
+            loadLocationOptions();
+        }
+
+        // ==================== MITARBEITER MANAGEMENT - VOLLSTÄNDIG EDITIERBAR ====================
+        
+        function loadAllEmployees() {
+            const container = document.getElementById('allEmployeesList');
+            container.innerHTML = '';
+            
+            const groupedEmployees = {};
+            LOCATIONS.filter(l => l.active).forEach(location => {
+                groupedEmployees[location.id] = ALL_EMPLOYEES.filter(e => e.location === location.id);
+            });
+            
+            Object.keys(groupedEmployees).forEach(locationId => {
+                const employees = groupedEmployees[locationId];
+                if (employees.length === 0) return;
+                
+                const location = LOCATIONS.find(l => l.id === locationId);
+                const header = document.createElement('div');
+                header.className = 'location-header';
+                header.style.background = `linear-gradient(135deg, ${location.color}, ${location.color}dd)`;
+                header.innerHTML = `${location.name} (${employees.length} Mitarbeiter)`;
+                container.appendChild(header);
+                
+                employees.forEach(emp => {
+                    const card = createEmployeeCard(emp);
+                    container.appendChild(card);
+                });
+            });
+        }
+        
+        function createEmployeeCard(employee) {
+            const card = document.createElement('div');
+            card.className = 'employee-card' + (!employee.active ? ' inactive' : '');
+            
+            const location = LOCATIONS.find(l => l.id === employee.location);
+            const locationBadge = location ? `<span class="location-badge" style="background: ${location.color};">${location.name}</span>` : '';
+            
+            let sauberkeitHTML = '';
+            if (employee.sauberkeit) {
+                sauberkeitHTML = `<span class="sauberkeit-indicator sauberkeit-${employee.sauberkeit}" onclick="editEmployeeSauberkeit(${employee.id})">${employee.sauberkeit}</span>`;
+            } else {
+                sauberkeitHTML = `<span class="sauberkeit-indicator" style="background: #95a5a6; color: white;" onclick="editEmployeeSauberkeit(${employee.id})">+</span>`;
+            }
+            
+            let noteIndicator = '';
+            if (employee.notes && employee.notes.trim() !== '') {
+                noteIndicator = `<span class="note-indicator" onclick="showNotePopup('${employee.id}', this)">📝</span>`;
+            }
+            
+            let typeClass = employee.type;
+            let typeLabel = employee.type.charAt(0).toUpperCase() + employee.type.slice(1);
+            
+            // Berechne geplante Stunden für diesen Mitarbeiter
+            let plannedHours = 0;
+            const monthData = SCHEDULES[currentScheduleMonth] || {};
+            Object.keys(monthData).forEach(dateStr => {
+                monthData[dateStr].forEach(shift => {
+                    if (shift.employeeId === employee.id) {
+                        plannedHours += shift.hours || 0;
+                    }
+                });
+            });
+            
+            // Berechne Gehalt
+            let salary = 0;
+            if (employee.type === 'festgehalt' || employee.type === 'extern') {
+                salary = calculateFixedSalary(employee);
+            } else {
+                salary = plannedHours * employee.hourlyRate;
+            }
+            
+            card.innerHTML = `
+                <div class="employee-info">
+                    <h4>
+                        <span class="employee-edit-field" onclick="editEmployeeName(${employee.id})">${employee.nr}. ${employee.name}</span>
+                        ${sauberkeitHTML} ${noteIndicator} ${locationBadge}
+                    </h4>
+                    <p>
+                        <span class="employee-type ${typeClass}">${typeLabel}</span>
+                        <span style="margin: 0 10px;">•</span>
+                        <span class="employee-edit-field" onclick="editEmployeeHourlyRate(${employee.id})">💰 ${employee.hourlyRate > 0 ? employee.hourlyRate.toFixed(2) + '€/h' : 'Festgehalt'}</span>
+                        <span style="margin: 0 10px;">•</span>
+                        ${employee.lohnGruppe !== 'custom' ? `<span class="lohn-gruppe-badge employee-edit-field" onclick="editEmployeeLohnGruppe(${employee.id})">Gruppe ${employee.lohnGruppe}</span>` : ''}
+                        <span class="employee-edit-field" onclick="editEmployeeType(${employee.id})">📋 ${employee.type}</span>
+                        ${plannedHours > 0 ? `<span class="hours-badge">${plannedHours}h</span>` : ''}
+                    </p>
+                    <div style="font-size: 12px; color: #7f8c8d; margin-top: 5px;">
+                        <span class="employee-edit-field" onclick="editEmployeeContractHours(${employee.id})"><strong>Vertrag:</strong> ${employee.contractHours || 0}h</span> | 
+                        <strong>Geplant:</strong> ${plannedHours}h | 
+                        <strong>Gehalt:</strong> ${formatCurrency(salary)}
+                        ${employee.fixedSalary > 0 ? ` | <span class="employee-edit-field" onclick="editEmployeeFixedSalary(${employee.id})"><strong>Festgehalt:</strong> ${formatCurrency(employee.fixedSalary)}</span>` : ''}
+                    </div>
+                </div>
+                <div class="employee-actions">
+                    <div class="employee-status-control">
+                        <label>Aktiv:</label>
+                        <input type="checkbox" ${employee.active ? 'checked' : ''} onchange="toggleEmployeeActive(${employee.id}, this.checked)">
+                    </div>
+                    <button class="btn" onclick="editEmployeeFull(${employee.id})" style="padding: 8px 12px; font-size: 12px;">✏️ Alle Felder</button>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function editEmployeeName(id) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === id);
+            if (!employee) return;
+            
+            const newName = prompt('Neuer Name:', employee.name);
+            if (newName !== null && newName.trim() !== '') {
+                employee.name = newName;
+                loadAllEmployees();
+            }
+        }
+        
+        function editEmployeeHourlyRate(id) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === id);
+            if (!employee) return;
+            
+            const newRate = prompt('Neuer Stundensatz (€):', employee.hourlyRate);
+            if (newRate !== null) {
+                employee.hourlyRate = parseFloat(newRate) || 0;
+                loadAllEmployees();
+            }
+        }
+        
+        function editEmployeeLohnGruppe(id) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === id);
+            if (!employee) return;
+            
+            const gruppen = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'custom'];
+            const newGruppe = prompt(`Lohn Gruppe (${gruppen.join(', ')}):`, employee.lohnGruppe);
+            
+            if (newGruppe !== null && gruppen.includes(newGruppe)) {
+                employee.lohnGruppe = newGruppe;
+                if (newGruppe !== 'custom' && LOHN_GRUPPEN[newGruppe]) {
+                    employee.hourlyRate = LOHN_GRUPPEN[newGruppe];
+                }
+                loadAllEmployees();
+            }
+        }
+        
+        function editEmployeeType(id) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === id);
+            if (!employee) return;
+            
+            const types = ['vollzeit', 'teilzeit', 'minijob', 'werkstudent', 'festgehalt', 'extern'];
+            const newType = prompt(`Vertragsart (${types.join(', ')}):`, employee.type);
+            
+            if (newType !== null && types.includes(newType)) {
+                employee.type = newType;
+                if (newType === 'festgehalt' || newType === 'extern') {
+                    employee.hourlyRate = 0;
+                }
+                loadAllEmployees();
+            }
+        }
+        
+        function editEmployeeContractHours(id) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === id);
+            if (!employee) return;
+            
+            const newHours = prompt('Vertragsstunden pro Monat:', employee.contractHours);
+            if (newHours !== null) {
+                employee.contractHours = parseInt(newHours) || 0;
+                loadAllEmployees();
+            }
+        }
+        
+        function editEmployeeFixedSalary(id) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === id);
+            if (!employee) return;
+            
+            const newSalary = prompt('Festgehalt (€):', employee.fixedSalary);
+            if (newSalary !== null) {
+                employee.fixedSalary = parseFloat(newSalary) || 0;
+                loadAllEmployees();
+            }
+        }
+        
+        function editEmployeeSauberkeit(id) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === id);
+            if (!employee) return;
+            
+            const newSauberkeit = prompt('Sauberkeit (1-4, leer für keine):', employee.sauberkeit || '');
+            if (newSauberkeit !== null) {
+                employee.sauberkeit = newSauberkeit ? parseInt(newSauberkeit) : null;
+                loadAllEmployees();
+            }
+        }
+        
+        function editEmployeeFull(id) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === id);
+            if (!employee) return;
+            
+            const newNotes = prompt(`Notizen für ${employee.name}:`, employee.notes || '');
+            if (newNotes !== null) {
+                employee.notes = newNotes;
+                loadAllEmployees();
+                alert('Mitarbeiterdaten wurden aktualisiert!');
+            }
+        }
+        
+        function showNotePopup(employeeId, element) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === parseInt(employeeId));
+            if (!employee || !employee.notes) return;
+            
+            // Entferne bestehende Popups
+            document.querySelectorAll('.note-popup').forEach(popup => popup.remove());
+            
+            const popup = document.createElement('div');
+            popup.className = 'note-popup';
+            popup.innerHTML = `<strong>Notizen:</strong><br>${employee.notes}`;
+            
+            const rect = element.getBoundingClientRect();
+            popup.style.position = 'fixed';
+            popup.style.left = rect.left + 'px';
+            popup.style.top = rect.bottom + 5 + 'px';
+            
+            document.body.appendChild(popup);
+            
+            // Schließe Popup bei Klick außerhalb
+            setTimeout(() => {
+                const closePopup = (e) => {
+                    if (!popup.contains(e.target) && e.target !== element) {
+                        popup.remove();
+                        document.removeEventListener('click', closePopup);
+                    }
+                };
+                document.addEventListener('click', closePopup);
+            }, 100);
+        }
+        
+        function showAddEmployeeForm() {
+            document.getElementById('addEmployeeForm').style.display = 'block';
+        }
+        
+        function hideAddEmployeeForm() {
+            document.getElementById('addEmployeeForm').style.display = 'none';
+        }
+        
+        function addNewEmployee() {
+            const firstName = document.getElementById('newFirstName').value;
+            const lastName = document.getElementById('newLastName').value;
+            const location = document.getElementById('newLocation').value;
+            const type = document.getElementById('newType').value;
+            const lohnGruppe = document.getElementById('newLohnGruppe').value;
+            const hourlyRate = parseFloat(document.getElementById('newHourlyRate').value) || 14.0;
+            const contractHours = parseInt(document.getElementById('newContractHours').value) || 160;
+            const fixedSalary = parseFloat(document.getElementById('newFixedSalary').value) || 0;
+            const notes = document.getElementById('newEmployeeNotes').value;
+            
+            if (!firstName || !lastName || !location) {
+                alert('Bitte füllen Sie alle Pflichtfelder aus.');
+                return;
+            }
+            
+            const newId = Math.max(...ALL_EMPLOYEES.map(e => e.id)) + 1;
+            const locationEmployees = ALL_EMPLOYEES.filter(e => e.location === location);
+            const newNr = locationEmployees.length > 0 ? Math.max(...locationEmployees.map(e => e.nr)) + 1 : 1;
+            
+            const newEmployee = {
+                id: newId,
+                nr: newNr,
+                name: `${firstName} ${lastName}`,
+                location: location,
+                hourlyRate: hourlyRate,
+                lohnGruppe: lohnGruppe,
+                type: type,
+                sauberkeit: null,
+                notes: notes,
+                active: true,
+                contractHours: contractHours,
+                fixedSalary: fixedSalary
+            };
+            
+            ALL_EMPLOYEES.push(newEmployee);
+            
+            // Formular zurücksetzen
+            document.getElementById('newFirstName').value = '';
+            document.getElementById('newLastName').value = '';
+            document.getElementById('newHourlyRate').value = '14.0';
+            document.getElementById('newContractHours').value = '160';
+            document.getElementById('newFixedSalary').value = '0';
+            document.getElementById('newEmployeeNotes').value = '';
+            
+            hideAddEmployeeForm();
+            loadAllEmployees();
+            loadDashboard();
+            loadLocationOptions();
+            
+            alert(`Mitarbeiter "${firstName} ${lastName}" wurde erfolgreich hinzugefügt!`);
+        }
+        
+        function toggleEmployeeActive(employeeId, active) {
+            const employee = ALL_EMPLOYEES.find(e => e.id === employeeId);
+            if (employee) {
+                employee.active = active;
+                loadAllEmployees();
+            }
+        }
+        
+        function filterEmployees() {
+            const searchTerm = document.getElementById('employeeSearch').value.toLowerCase();
+            const locationFilter = document.getElementById('locationFilter').value;
+            
+            const container = document.getElementById('allEmployeesList');
+            container.innerHTML = '';
+            
+            let filteredEmployees = ALL_EMPLOYEES;
+            
+            if (locationFilter !== 'all') {
+                filteredEmployees = filteredEmployees.filter(e => e.location === locationFilter);
+            }
+            
+            if (searchTerm) {
+                filteredEmployees = filteredEmployees.filter(e => 
+                    e.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            const groupedEmployees = {};
+            filteredEmployees.forEach(emp => {
+                if (!groupedEmployees[emp.location]) {
+                    groupedEmployees[emp.location] = [];
+                }
+                groupedEmployees[emp.location].push(emp);
+            });
+            
+            Object.keys(groupedEmployees).forEach(locationId => {
+                const employees = groupedEmployees[locationId];
+                const location = LOCATIONS.find(l => l.id === locationId);
+                
+                if (location) {
+                    const header = document.createElement('div');
+                    header.className = 'location-header';
+                    header.style.background = `linear-gradient(135deg, ${location.color}, ${location.color}dd)`;
+                    header.innerHTML = `${location.name} (${employees.length} Mitarbeiter)`;
+                    container.appendChild(header);
+                    
+                    employees.forEach(emp => {
+                        const card = createEmployeeCard(emp);
+                        container.appendChild(card);
+                    });
+                }
+            });
+        }
+
+        // ==================== DIENSTPLAN FUNKTIONEN ====================
+        
+        function loadDienstplan() {
+            const view = document.getElementById('dienstplanView').value;
+            const location = document.getElementById('dienstplanLocation').value;
+            
+            if (view === 'monthly') {
+                loadMonthlyDienstplan(location);
+            } else if (view === 'weekly') {
+                loadWeeklyDienstplan(location);
+            } else {
+                loadDailyDienstplan(location);
+            }
+        }
+        
+        function loadDienstplanForLocation(locationId) {
+            document.getElementById('dienstplanLocation').value = locationId;
+            loadDienstplan();
+        }
+        
+        function loadMonthlyDienstplan(locationFilter = 'all') {
+            const container = document.getElementById('dienstplanContent');
+            const [year, month] = currentScheduleMonth.split('-').map(Number);
+            const daysInMonth = getDaysInMonth(year, month);
+            
+            let html = `<div class="dienstplan-container">
+                <table class="dienstplan-table">
+                    <thead>
+                        <tr>
+                            <th class="day-header">Mitarbeiter</th>`;
+            
+            // Tage-Header
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month - 1, day);
+                html += `<th class="day-header">${getGermanDayName(date)}<br>${day}</th>`;
+            }
+            
+            html += `</tr></thead><tbody>`;
+            
+            // Mitarbeiter filtern
+            let employees = ALL_EMPLOYEES.filter(e => e.active);
+            if (locationFilter !== 'all') {
+                employees = employees.filter(e => e.location === locationFilter);
+            }
+            
+            // Nach Standort gruppieren
+            employees.sort((a, b) => {
+                if (a.location === b.location) {
+                    return a.nr - b.nr;
+                }
+                return a.location.localeCompare(b.location);
+            });
+            
+            // Jeden Mitarbeiter zeilenweise anzeigen
+            employees.forEach(employee => {
+                const location = LOCATIONS.find(l => l.id === employee.location);
+                html += `<tr>
+                    <td style="position: sticky; left: 0; background: white; z-index: 1;">
+                        <strong>${employee.name}</strong><br>
+                        <small style="color: ${location ? location.color : '#95a5a6'}">${getLocationName(employee.location)}</small><br>
+                        <small>${employee.hourlyRate > 0 ? employee.hourlyRate.toFixed(2) + '€/h' : 'Festgehalt'}</small>
+                    </td>`;
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const daySchedule = SCHEDULES[currentScheduleMonth]?.[dateStr] || [];
+                    const employeeShifts = daySchedule.filter(s => s.employeeId === employee.id);
+                    
+                    html += `<td class="shift-cell" onclick="openShiftModal('${dateStr}', ${employee.id})">`;
+                    
+                    employeeShifts.forEach(shift => {
+                        let shiftClass = '';
+                        switch(shift.type) {
+                            case 'morning': shiftClass = 'shift-morning'; break;
+                            case 'Day': shiftClass = 'shift-Day'; break;
+                            case 'Mid': shiftClass = 'shift-Mid'; break;
+                            case 'Evening': shiftClass = 'shift-Evening'; break;
+                        }
+                        
+                        const noteIndicator = shift.notes ? '📝' : '';
+                        html += `<div class="shift-entry ${shiftClass}" onclick="event.stopPropagation(); editExistingShift('${dateStr}', ${shift.id})" title="${shift.start} - ${shift.end} (${shift.hours}h)${shift.notes ? '\n' + shift.notes : ''}">
+                            ${shift.start.split(':')[0]}-${shift.end.split(':')[0]} (${shift.hours}h) ${noteIndicator}
+                        </div>`;
+                    });
+                    
+                    if (employeeShifts.length === 0) {
+                        html += `<button class="add-shift-btn" onclick="event.stopPropagation(); openShiftModal('${dateStr}', ${employee.id})">+</button>`;
+                    }
+                    
+                    html += `</td>`;
+                }
+                
+                html += `</tr>`;
+            });
+            
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
+        }
+        
+        function editExistingShift(dateStr, shiftId) {
+            const monthData = SCHEDULES[currentScheduleMonth] || {};
+            const daySchedule = monthData[dateStr] || [];
+            const shift = daySchedule.find(s => s.id === shiftId);
+            
+            if (!shift) return;
+            
+            currentEditingShift = { dateStr, shiftId, shift };
+            
+            document.getElementById('editShiftHours').value = shift.hours || 8;
+            document.getElementById('editShiftType').value = shift.type || 'full';
+            document.getElementById('editShiftNotes').value = shift.notes || '';
+            
+            const modal = document.getElementById('editShiftModal');
+            const overlay = document.getElementById('modalOverlay');
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+        
+        function updateShift() {
+            if (!currentEditingShift) return;
+            
+            const { dateStr, shiftId } = currentEditingShift;
+            const monthData = SCHEDULES[currentScheduleMonth] || {};
+            const daySchedule = monthData[dateStr] || [];
+            const shiftIndex = daySchedule.findIndex(s => s.id === shiftId);
+            
+            if (shiftIndex !== -1) {
+                daySchedule[shiftIndex].hours = parseFloat(document.getElementById('editShiftHours').value) || 8;
+                daySchedule[shiftIndex].type = document.getElementById('editShiftType').value;
+                daySchedule[shiftIndex].notes = document.getElementById('editShiftNotes').value;
+                
+                SCHEDULES[currentScheduleMonth][dateStr] = daySchedule;
+            }
+            
+            closeEditShiftModal();
+            loadDienstplan();
+            alert('Schicht wurde aktualisiert!');
+        }
+        
+        function deleteShift() {
+            if (!currentEditingShift) return;
+            
+            const { dateStr, shiftId } = currentEditingShift;
+            const monthData = SCHEDULES[currentScheduleMonth] || {};
+            const daySchedule = monthData[dateStr] || [];
+            const shiftIndex = daySchedule.findIndex(s => s.id === shiftId);
+            
+            if (shiftIndex !== -1) {
+                daySchedule.splice(shiftIndex, 1);
+                SCHEDULES[currentScheduleMonth][dateStr] = daySchedule;
+            }
+            
+            closeEditShiftModal();
+            loadDienstplan();
+            alert('Schicht wurde gelöscht!');
+        }
+        
+        function closeEditShiftModal() {
+            document.getElementById('editShiftModal').style.display = 'none';
+            document.getElementById('modalOverlay').style.display = 'none';
+            currentEditingShift = null;
+        }
+        
+        function openShiftModal(dateStr, employeeId = null) {
+            const modal = document.getElementById('shiftModal');
+            const overlay = document.getElementById('modalOverlay');
+            
+            const employeeSelect = document.getElementById('shiftEmployee');
+            employeeSelect.innerHTML = '';
+            
+            ALL_EMPLOYEES.filter(e => e.active).forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = `${emp.name} (${getLocationName(emp.location)}) - ${emp.hourlyRate > 0 ? emp.hourlyRate.toFixed(2) + '€/h' : 'Festgehalt'}`;
+                if (employeeId === emp.id) option.selected = true;
+                employeeSelect.appendChild(option);
+            });
+            
+            document.getElementById('shiftDate').value = dateStr;
+            
+            document.querySelectorAll('.shift-type-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            document.getElementById('shiftNotes').value = '';
+            
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+        
+        function selectShiftType(type) {
+            document.querySelectorAll('.shift-type-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.dataset.type === type) {
+                    btn.classList.add('selected');
+                }
+            });
+            
+            switch(type) {
+                case 'morning':
+                    document.getElementById('shiftStart').value = '05:00';
+                    document.getElementById('shiftEnd').value = '13:30';
+                    break;
+                case 'Day':
+                    document.getElementById('shiftStart').value = '06:00';
+                    document.getElementById('shiftEnd').value = '14:30';
+                    break;
+                case 'Mid':
+                    document.getElementById('shiftStart').value = '08:00';
+                    document.getElementById('shiftEnd').value = '16:30';
+                    break;
+                case 'Evening':
+                    document.getElementById('shiftStart').value = '12:00';
+                    document.getElementById('shiftEnd').value = '20:30';
+                    break;
+            }
+            
+            calculateShiftHours();
+        }
+        
+        function calculateShiftHours() {
+            const start = document.getElementById('shiftStart').value;
+            const end = document.getElementById('shiftEnd').value;
+            const breakTime = parseFloat(document.getElementById('shiftBreak').value) || 0;
+            
+            if (start && end) {
+                const startParts = start.split(':').map(Number);
+                const endParts = end.split(':').map(Number);
+                
+                let startHours = startParts[0] + startParts[1] / 60;
+                let endHours = endParts[0] + endParts[1] / 60;
+                
+                if (endHours < startHours) {
+                    endHours += 24;
+                }
+                
+                const totalHours = endHours - startHours - (breakTime / 60);
+                document.getElementById('shiftHours').value = totalHours.toFixed(1);
+            }
+        }
+        
+        function saveShift() {
+            const employeeId = parseInt(document.getElementById('shiftEmployee').value);
+            const dateStr = document.getElementById('shiftDate').value;
+            const start = document.getElementById('shiftStart').value;
+            const end = document.getElementById('shiftEnd').value;
+            const hours = parseFloat(document.getElementById('shiftHours').value);
+            const breakTime = parseFloat(document.getElementById('shiftBreak').value) || 0;
+            const notes = document.getElementById('shiftNotes').value;
+            
+            const selectedTypeBtn = document.querySelector('.shift-type-btn.selected');
+            const type = selectedTypeBtn ? selectedTypeBtn.dataset.type : 'full';
+            
+            const [year, month] = dateStr.split('-');
+            const monthKey = `${year}-${month}`;
+            
+            if (!SCHEDULES[monthKey]) {
+                SCHEDULES[monthKey] = {};
+            }
+            
+            if (!SCHEDULES[monthKey][dateStr]) {
+                SCHEDULES[monthKey][dateStr] = [];
+            }
+            
+            const newShift = {
+                id: Date.now(),
+                employeeId: employeeId,
+                date: dateStr,
+                start: start,
+                end: end,
+                hours: hours,
+                break: breakTime,
+                type: type,
+                notes: notes
+            };
+            
+            SCHEDULES[monthKey][dateStr].push(newShift);
+            
+            closeShiftModal();
+            loadDienstplan();
+            loadDashboard();
+            
+            alert('Schicht wurde erfolgreich gespeichert!');
+        }
+        
+        function closeShiftModal() {
+            document.getElementById('shiftModal').style.display = 'none';
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+        
+        function changeMonth(delta) {
+            const [year, month] = currentScheduleMonth.split('-').map(Number);
+            let newMonth = month + delta;
+            let newYear = year;
+            
+            if (newMonth > 12) {
+                newMonth = 1;
+                newYear++;
+            } else if (newMonth < 1) {
+                newMonth = 12;
+                newYear--;
+            }
+            
+            currentScheduleMonth = `${newYear}-${String(newMonth).padStart(2, '0')}`;
+            
+            const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+                           'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+            document.getElementById('dienstplanMonth').textContent = `${months[newMonth - 1]} ${newYear}`;
+            document.getElementById('currentDienstplanMonth').textContent = `${months[newMonth - 1]} ${newYear}`;
+            document.getElementById('salaryMonth').textContent = `${months[newMonth - 1]} ${newYear}`;
+            document.getElementById('reportMonth').textContent = `${months[newMonth - 1]} ${newYear}`;
+            
+            loadDienstplan();
+        }
+        
+        function copyPreviousMonth() {
+            if (confirm('Möchten Sie die Schichten des Vormonats kopieren?')) {
+                const [year, month] = currentScheduleMonth.split('-').map(Number);
+                let prevMonth = month - 1;
+                let prevYear = year;
+                
+                if (prevMonth < 1) {
+                    prevMonth = 12;
+                    prevYear--;
+                }
+                
+                const prevMonthKey = `${prevYear}-${String(prevMonth).padStart(2, '0')}`;
+                
+                if (SCHEDULES[prevMonthKey]) {
+                    SCHEDULES[currentScheduleMonth] = JSON.parse(JSON.stringify(SCHEDULES[prevMonthKey]));
+                    loadDienstplan();
+                    alert('Dienstplan wurde kopiert!');
+                } else {
+                    alert('Keine Daten für den Vormonat gefunden.');
+                }
+            }
+        }
+        
+        function clearSchedule() {
+            if (confirm('Möchten Sie wirklich alle Schichten für diesen Monat löschen?')) {
+                SCHEDULES[currentScheduleMonth] = {};
+                loadDienstplan();
+                loadDashboard();
+                alert('Dienstplan wurde geleert!');
+            }
+        }
+
+        // ==================== LOHNKOSTEN BERECHNUNG ====================
+        
+        function calculateMonthlySalaryFromSchedule() {
+            const container = document.getElementById('salaryContent');
+            const [year, month] = currentScheduleMonth.split('-').map(Number);
+            const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+                           'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+            
+            document.getElementById('salaryMonth').textContent = `${months[month - 1]} ${year}`;
+            
+            let html = '';
+            
+            // Berechne Stunden und Gehälter pro Standort
+            const locationStats = {};
+            LOCATIONS.filter(l => l.active).forEach(location => {
+                locationStats[location.id] = {
+                    name: location.name,
+                    color: location.color,
+                    employees: [],
+                    totalHours: 0,
+                    totalSalary: 0
+                };
+            });
+            
+            // Sammle alle Schichten des aktuellen Monats
+            const monthData = SCHEDULES[currentScheduleMonth] || {};
+            Object.keys(monthData).forEach(dateStr => {
+                monthData[dateStr].forEach(shift => {
+                    const employee = ALL_EMPLOYEES.find(e => e.id === shift.employeeId);
+                    if (employee && employee.active) {
+                        const locationId = employee.location;
+                        if (locationStats[locationId]) {
+                            locationStats[locationId].totalHours += shift.hours || 0;
+                            
+                            // Für Stundenlohn-Mitarbeiter
+                            if (employee.hourlyRate > 0) {
+                                locationStats[locationId].totalSalary += (shift.hours || 0) * employee.hourlyRate;
+                            }
+                            
+                            // Füge Mitarbeiter zur Liste hinzu wenn nicht vorhanden
+                            if (!locationStats[locationId].employees.find(e => e.id === employee.id)) {
+                                locationStats[locationId].employees.push({
+                                    id: employee.id,
+                                    name: employee.name,
+                                    hourlyRate: employee.hourlyRate,
+                                    type: employee.type,
+                                    plannedHours: 0,
+                                    salary: 0,
+                                    fixedSalary: employee.fixedSalary || 0
+                                });
+                            }
+                            
+                            // Aktualisiere Mitarbeiter-Stunden
+                            const empStat = locationStats[locationId].employees.find(e => e.id === employee.id);
+                            if (empStat) {
+                                empStat.plannedHours += shift.hours || 0;
+                                if (employee.hourlyRate > 0) {
+                                    empStat.salary += (shift.hours || 0) * employee.hourlyRate;
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Füge Festgehälter hinzu
+            ALL_EMPLOYEES.forEach(employee => {
+                if (employee.active && (employee.type === 'festgehalt' || employee.type === 'extern')) {
+                    const locationId = employee.location;
+                    if (locationStats[locationId]) {
+                        const fixedSalary = calculateFixedSalary(employee);
+                        locationStats[locationId].totalSalary += fixedSalary;
+                        
+                        if (!locationStats[locationId].employees.find(e => e.id === employee.id)) {
+                            locationStats[locationId].employees.push({
+                                id: employee.id,
+                                name: employee.name,
+                                hourlyRate: 0,
+                                type: employee.type,
+                                plannedHours: 0,
+                                salary: fixedSalary,
+                                fixedSalary: fixedSalary
+                            });
+                        } else {
+                            const empStat = locationStats[locationId].employees.find(e => e.id === employee.id);
+                            if (empStat) {
+                                empStat.salary += fixedSalary;
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Zeige jeden Standort an
+            Object.keys(locationStats).forEach(locationId => {
+                const stats = locationStats[locationId];
+                if (stats.employees.length === 0) return;
+                
+                html += `<div class="location-header" style="background: linear-gradient(135deg, ${stats.color}, ${stats.color}dd);">
+                    ${stats.name} - Gehälter basierend auf Dienstplan
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nr.</th>
+                            <th>Mitarbeiter</th>
+                            <th>Stundensatz (€)</th>
+                            <th>Geplante Stunden</th>
+                            <th>Monatsgehalt (€)</th>
+                            <th>Notizen</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                
+                stats.employees.sort((a, b) => {
+                    const empA = ALL_EMPLOYEES.find(e => e.id === a.id);
+                    const empB = ALL_EMPLOYEES.find(e => e.id === b.id);
+                    return (empA?.nr || 0) - (empB?.nr || 0);
+                });
+                
+                stats.employees.forEach((emp) => {
+                    const employee = ALL_EMPLOYEES.find(e => e.id === emp.id);
+                    
+                    html += `<tr>
+                        <td>${employee?.nr || ''}</td>
+                        <td><strong>${emp.name}</strong></td>
+                        <td>${emp.hourlyRate > 0 ? emp.hourlyRate.toFixed(2) + '€' : 'Festgehalt'}</td>
+                        <td>${emp.plannedHours}h</td>
+                        <td><strong>${formatCurrency(emp.salary)}</strong></td>
+                        <td>${employee && employee.notes ? employee.notes : ''}</td>
+                    </tr>`;
+                });
+                
+                html += `<tr class="total-row">
+                    <td colspan="3"><strong>Gesamt ${stats.name}</strong></td>
+                    <td><strong>${stats.totalHours}h</strong></td>
+                    <td><strong>${formatCurrency(stats.totalSalary)}</strong></td>
+                    <td></td>
+                </tr>
+                </tbody></table>`;
+            });
+            
+            // Berechne Gesamtsummen
+            let totalHoursAll = 0;
+            let totalSalaryAll = 0;
+            Object.keys(locationStats).forEach(locationId => {
+                totalHoursAll += locationStats[locationId].totalHours;
+                totalSalaryAll += locationStats[locationId].totalSalary;
+            });
+            
+            // Zusammenfassung
+            const totalWithNK = totalSalaryAll * 1.18;
+            const nettoUmsatz = 90000;
+            const umsatzProzent = totalWithNK > 0 ? (totalWithNK / nettoUmsatz * 100).toFixed(1) : 0;
+            
+            html += `<div class="summary" style="margin-top: 30px;">
+                <h3>📊 Monatliche Lohnkosten Zusammenfassung</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div class="summary-card">
+                        <h4>📈 Dienstplan basiert</h4>
+                        <p><strong>Gesamt Stunden:</strong> ${totalHoursAll}h</p>
+                        <p><strong>Brutto Lohnkosten:</strong> ${formatCurrency(totalSalaryAll)}</p>
+                        <p><strong>+ 18% Nebenkosten:</strong> ${formatCurrency(totalSalaryAll * 0.18)}</p>
+                        <p><strong>Gesamt mit NK:</strong> ${formatCurrency(totalWithNK)}</p>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <h4>💰 Umsatzanteil</h4>
+                        <p><strong>Netto Umsatz (muss):</strong> ${formatCurrency(nettoUmsatz)}</p>
+                        <p><strong>Lohnkostenanteil:</strong> ${umsatzProzent}%</p>
+                        <p><strong>Status:</strong> ${umsatzProzent <= 30 ? '✅ Gut' : umsatzProzent <= 40 ? '⚠️ Okay' : '❌ Hoch'}</p>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <h4>🏢 Standort Statistik</h4>
+                        <p><strong>Geplante Stunden gesamt:</strong> ${totalHoursAll}h</p>
+                        <p><strong>Aktive Standorte:</strong> ${LOCATIONS.filter(l => l.active).length}</p>
+                        <p><strong>Durchschn. Kosten/Stunde:</strong> ${totalHoursAll > 0 ? formatCurrency(totalSalaryAll / totalHoursAll) : '0€'}</p>
+                    </div>
+                </div>
+            </div>`;
+            
+            container.innerHTML = html;
+        }
+        
+        function calculateBasedOnContractHours() {
+            const container = document.getElementById('salaryContent');
+            let html = '<div class="summary"><h3>📋 Berechnung basierend auf Vertragsstunden</h3></div>';
+            
+            // Gruppiere nach Standort
+            const locationGroups = {};
+            ALL_EMPLOYEES.forEach(emp => {
+                if (!locationGroups[emp.location]) {
+                    locationGroups[emp.location] = [];
+                }
+                locationGroups[emp.location].push(emp);
+            });
+            
+            // Zeige jeden Standort an
+            Object.keys(locationGroups).forEach(locationId => {
+                const employees = locationGroups[locationId];
+                const location = LOCATIONS.find(l => l.id === locationId);
+                
+                if (location && employees.length > 0) {
+                    html += `<div class="location-header" style="background: linear-gradient(135deg, ${location.color}, ${location.color}dd);">
+                        ${location.name} - Vertragsgehälter
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nr.</th>
+                                <th>Mitarbeiter</th>
+                                <th>Vertrag Stunden</th>
+                                <th>Stundensatz (€)</th>
+                                <th>Monatsgehalt (€)</th>
+                                <th>Notizen</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                    
+                    let locationTotal = 0;
+                    
+                    employees.forEach(emp => {
+                        let salary = 0;
+                        if (emp.type === 'festgehalt' || emp.type === 'extern') {
+                            salary = calculateFixedSalary(emp);
+                        } else {
+                            salary = emp.contractHours * emp.hourlyRate;
+                        }
+                        
+                        locationTotal += salary;
+                        
+                        html += `<tr>
+                            <td>${emp.nr}</td>
+                            <td><strong>${emp.name}</strong></td>
+                            <td>${emp.contractHours}h</td>
+                            <td>${emp.hourlyRate > 0 ? emp.hourlyRate.toFixed(2) + '€' : 'Festgehalt'}</td>
+                            <td><strong>${formatCurrency(salary)}</strong></td>
+                            <td>${emp.notes || ''}</td>
+                        </tr>`;
+                    });
+                    
+                    html += `<tr class="total-row">
+                        <td colspan="4"><strong>Gesamt ${location.name}</strong></td>
+                        <td><strong>${formatCurrency(locationTotal)}</strong></td>
+                        <td></td>
+                    </tr>
+                    </tbody></table>`;
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // ==================== EXPORT FUNKTIONEN ====================
+        
+        function exportDienstplan() {
+            const monthData = SCHEDULES[currentScheduleMonth] || {};
+            let csvContent = `Dienstplan ${currentScheduleMonth}\n\n`;
+            csvContent += 'Datum,Mitarbeiter,Standort,Schicht,Start,Ende,Stunden,Notizen\n';
+            
+            Object.keys(monthData).forEach(dateStr => {
+                monthData[dateStr].forEach(shift => {
+                    const employee = ALL_EMPLOYEES.find(e => e.id === shift.employeeId);
+                    if (employee) {
+                        csvContent += `"${dateStr}","${employee.name}","${getLocationName(employee.location)}","${shift.type}","${shift.start}","${shift.end}",${shift.hours},"${shift.notes || ''}"\n`;
+                    }
+                });
+            });
+            
+            downloadCSV(csvContent, `Dienstplan_${currentScheduleMonth}.csv`);
+        }
+        
+        function exportSalaryReport() {
+            // Berechne zuerst die Gehälter
+            calculateMonthlySalaryFromSchedule();
+            
+            let csvContent = `Lohnkostenberchnung ${currentScheduleMonth}\n`;
+            csvContent += "Berechnet am: " + new Date().toLocaleDateString('de-DE') + "\n\n";
+            
+            csvContent += "Standort,Mitarbeiter,Stundensatz,Geplante Stunden,Monatsgehalt,Notizen\n";
+            
+            // Sammle alle Schichten des aktuellen Monats
+            const employeeStats = {};
+            const monthData = SCHEDULES[currentScheduleMonth] || {};
+            Object.keys(monthData).forEach(dateStr => {
+                monthData[dateStr].forEach(shift => {
+                    const employee = ALL_EMPLOYEES.find(e => e.id === shift.employeeId);
+                    if (employee && employee.active) {
+                        if (!employeeStats[employee.id]) {
+                            employeeStats[employee.id] = {
+                                employee: employee,
+                                hours: 0,
+                                salary: 0
+                            };
+                        }
+                        employeeStats[employee.id].hours += shift.hours || 0;
+                        if (employee.hourlyRate > 0) {
+                            employeeStats[employee.id].salary += (shift.hours || 0) * employee.hourlyRate;
+                        }
+                    }
+                });
+            });
+            
+            // Füge Festgehälter hinzu
+            ALL_EMPLOYEES.forEach(employee => {
+                if (employee.active && (employee.type === 'festgehalt' || employee.type === 'extern')) {
+                    if (!employeeStats[employee.id]) {
+                        employeeStats[employee.id] = {
+                            employee: employee,
+                            hours: 0,
+                            salary: calculateFixedSalary(employee)
+                        };
+                    } else {
+                        employeeStats[employee.id].salary += calculateFixedSalary(employee);
+                    }
+                }
+            });
+            
+            // Exportiere alle Mitarbeiter
+            Object.keys(employeeStats).forEach(empId => {
+                const stat = employeeStats[empId];
+                csvContent += `"${getLocationName(stat.employee.location)}","${stat.employee.name}",${stat.employee.hourlyRate},${stat.hours},${stat.salary.toFixed(2)},"${stat.employee.notes || ''}"\n`;
+            });
+            
+            downloadCSV(csvContent, `Lohnkosten_${currentScheduleMonth}.csv`);
+        }
+        
+        function exportAllData() {
+            let csvContent = "Payroll Management System - Alle Daten\n";
+            csvContent += "Exportiert am: " + new Date().toLocaleDateString('de-DE') + "\n\n";
+            
+            // Standorte
+            csvContent += "Standorte\n";
+            csvContent += "ID,Name,Adresse,Max Mitarbeiter,Aktiv\n";
+            LOCATIONS.forEach(l => {
+                csvContent += `"${l.id}","${l.name}","${l.address}",${l.maxEmployees},${l.active}\n`;
+            });
+            
+            csvContent += "\n\nMitarbeiter\n";
+            csvContent += "ID,Nr,Name,Standort,Stundensatz,Lohn Gruppe,Typ,Aktiv,Vertragsstunden,Festgehalt,Notizen\n";
+            ALL_EMPLOYEES.forEach(emp => {
+                csvContent += `${emp.id},${emp.nr},"${emp.name}","${emp.location}",${emp.hourlyRate},"${emp.lohnGruppe}","${emp.type}",${emp.active},${emp.contractHours || 0},${emp.fixedSalary || 0},"${emp.notes || ''}"\n`;
+            });
+            
+            csvContent += "\n\nDienstplan\n";
+            csvContent += "Monat,Datum,Mitarbeiter ID,Start,Ende,Stunden,Schichttyp,Notizen\n";
+            Object.keys(SCHEDULES).forEach(monthKey => {
+                const monthData = SCHEDULES[monthKey];
+                Object.keys(monthData).forEach(dateStr => {
+                    monthData[dateStr].forEach(shift => {
+                        csvContent += `"${monthKey}","${dateStr}",${shift.employeeId},"${shift.start}","${shift.end}",${shift.hours},"${shift.type}","${shift.notes || ''}"\n`;
+                    });
+                });
+            });
+            
+            // Forecast Daten
+            csvContent += "\n\nForecast Daten 2026\n";
+            csvContent += "ID,Filiale,Filial-Name,Monat,Summe Umsatz 2025,Forcast Für Soll 2026,Teamleiter Wünsch,Forcast Ist 2026,Summe Ausgaben 2025,Summe Ausgaben 2026,Anzahl Kunden 2025,Anzahl Kunden 2026,Umsatz pro Kunde 2025,Umsatz pro Kunde 2026,Arbeitsstunden Personal 2025,Arbeitsstunden Personal Teamleiter soll 2026,Arbeitsstunden Personal Teamleiter wünsch 2026,Arbeitsstunden Personal 2026 ist,Umsatz pro Arbeitsstunde 2025,Umsatz pro Arbeitsstunde soll 2026,Umsatz pro Arbeitsstunde 2026 wünsch,Umsatz pro Arbeitsstunde 2026 ist,Kassen Differenz 2025,Kassen Differenz 2026\n";
+            
+            FORECAST_DATA.forEach(data => {
+                const forecastSoll = calculateForecastSoll(data.summeUmsatz2025);
+                const umsatzProKunde2025 = calculateUmsatzProKunde(data.summeUmsatz2025, data.anzahlKunden2025);
+                const umsatzProArbeitsstunde2025 = calculateUmsatzProArbeitsstunde(data.summeUmsatz2025, data.arbeitsstundenPersonal2025);
+                const umsatzProKunde2026 = data.anzahlKunden2026 && data.forecastIst2026 ? calculateUmsatzProKunde(data.forecastIst2026, data.anzahlKunden2026) : '';
+                const umsatzProArbeitsstunde2026 = data.arbeitsstundenPersonal2026Ist && data.forecastIst2026 ? calculateUmsatzProArbeitsstunde(data.forecastIst2026, data.arbeitsstundenPersonal2026Ist) : '';
+                
+                csvContent += `${data.id},${data.filiale},"${data.filialName}","${data.monat}",${data.summeUmsatz2025},${forecastSoll},${data.teamleiterWunsch || ''},${data.forecastIst2026 || ''},${data.summeAusgaben2025},${data.summeAusgaben2026 || ''},${data.anzahlKunden2025},${data.anzahlKunden2026 || ''},${umsatzProKunde2025},${umsatzProKunde2026 || ''},${data.arbeitsstundenPersonal2025},${data.arbeitsstundenTeamleiterSoll2026},${data.arbeitsstundenTeamleiterWunsch2026 || ''},${data.arbeitsstundenPersonal2026Ist || ''},${umsatzProArbeitsstunde2025},${data.umsatzProArbeitsstundeSoll2026},${data.umsatzProArbeitsstunde2026Wunsch || ''},${umsatzProArbeitsstunde2026 || ''},${data.kassenDifferenz2025},${data.kassenDifferenz2026 || ''}\n`;
+            });
+            
+            downloadCSV(csvContent, 'Payroll_Alle_Daten.csv');
+        }
+        
+        function downloadCSV(csvContent, fileName) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert(`${fileName} wurde erfolgreich exportiert!`);
+        }
+
+        // ==================== NAVIGATION ====================
+        
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.nav-btn[onclick*="${sectionId}"]`).classList.add('active');
+            
+            switch(sectionId) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'employees':
+                    loadAllEmployees();
+                    break;
+                case 'locations':
+                    loadLocations();
+                    break;
+                case 'dienstplan':
+                    loadDienstplan();
+                    break;
+                case 'salary':
+                    calculateMonthlySalaryFromSchedule();
+                    break;
+                case 'forecast':
+                    loadAllForecastData();
+                    break;
+                case 'reports':
+                    generateFullReport();
+                    break;
+            }
+        }
+
+        // ==================== INITIALISIERUNG ====================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLocationOptions();
+            loadDashboard();
+            
+            const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+                           'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth();
+            
+            document.getElementById('currentMonth').textContent = 
+                `${months[currentMonth]} ${currentYear}`;
+            
+            document.getElementById('dienstplanMonth').textContent = 
+                `${months[currentMonth]} ${currentYear}`;
+            
+            document.getElementById('currentDienstplanMonth').textContent = 
+                `${months[currentMonth]} ${currentYear}`;
+            
+            document.getElementById('salaryMonth').textContent = 
+                `${months[currentMonth]} ${currentYear}`;
+            
+            document.getElementById('reportMonth').textContent = 
+                `${months[currentMonth]} ${currentYear}`;
+            
+            // Event Listener
+            document.getElementById('shiftStart').addEventListener('change', calculateShiftHours);
+            document.getElementById('shiftEnd').addEventListener('change', calculateShiftHours);
+            document.getElementById('shiftBreak').addEventListener('change', calculateShiftHours);
+            
+            document.getElementById('modalOverlay').addEventListener('click', function() {
+                closeShiftModal();
+                closeEditShiftModal();
+                closeForecastModal();
+            });
+            
+            // Lade initialen Dienstplan
+            loadDienstplan();
+            loadAllForecastData();
+        });
+
+        // ==================== PLATZHALTER FUNKTIONEN ====================
+        
+        function generateFullReport() {
+            document.getElementById('fullReportContent').innerHTML = `
+                <div class="summary">
+                    <h3>📊 Vollständiger Monatsbericht</h3>
+                    <p>Diese Funktion erstellt einen vollständigen Bericht mit allen Daten.</p>
+                    <button class="btn" onclick="exportFullReport()">📤 Bericht exportieren</button>
+                </div>
+            `;
+        }
+        
+        function exportFullReport() {
+            alert("Vollständiger Bericht wird exportiert...");
+        }
+        
+        function printReport() {
+            window.print();
+        }
+        
+        function loadWeeklyDienstplan() {
+            document.getElementById('dienstplanContent').innerHTML = `
+                <div class="summary">
+                    <h3>📅 Wochenansicht</h3>
+                    <p>Diese Funktion wird noch implementiert.</p>
+                </div>
+            `;
+        }
+        
+        function loadDailyDienstplan() {
+            document.getElementById('dienstplanContent').innerHTML = `
+                <div class="summary">
+                    <h3>📅 Tagesansicht</h3>
+                    <p>Diese Funktion wird noch implementiert.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
