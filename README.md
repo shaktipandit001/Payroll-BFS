@@ -23,7 +23,7 @@ This system provides a complete solution for workforce management with real-time
 ### 📅 Schedule Management
 - Interactive monthly schedule view
 - Multi-location scheduling
-- 4 shift types: Morning (🌅), Evening (🌇), Night (🌙), Full-day (⏰)
+- 4 shift types: Morning (🌅), Day (🌇), Mid (🌙), Evening (⏰)
 - Automatic hour calculation with break management
 - Copy previous month functionality
 
